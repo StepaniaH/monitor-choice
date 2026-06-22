@@ -41,3 +41,9 @@ build/
 tmp/
 .cache/
 coverage/
+
+# Project planning & development artifacts
+docs/
+.hermes/
+DESIGN.md
+*.plan.md
