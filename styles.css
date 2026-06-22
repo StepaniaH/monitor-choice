@@ -181,12 +181,12 @@ button {
   -webkit-backdrop-filter: blur(18px);
 }
 
-/* ---------------------------------------------------------------------
+/* --------------------------------------------------------------------- */
    Input panel (sticky, always visible)
    --------------------------------------------------------------------- */
 .input-panel {
   position: sticky;
-  top: var(--space-md);
+  top: 0;
   z-index: 50;
   border: 1px solid var(--border);
   background: var(--glass-bg-strong);
@@ -194,11 +194,11 @@ button {
   box-shadow: var(--shadow-sticky);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  padding: var(--space-lg);
+  padding: var(--space-md) var(--space-lg);
   margin-bottom: var(--space-xl);
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: var(--space-lg);
+  gap: var(--space-md) var(--space-lg);
 }
 
 .input-panel .input-group {
@@ -236,32 +236,41 @@ button {
 
 .input-panel select {
   width: 100%;
-  padding: var(--space-sm) var(--space-md);
+  height: 34px;
+  padding: 0 var(--space-md);
   font-family: var(--font);
   font-size: 14px;
+  font-weight: 500;
   color: var(--text-primary);
   background-color: rgba(11, 16, 32, 0.9);
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-pill);
   cursor: pointer;
   appearance: none;
   -webkit-appearance: none;
-  background-image: linear-gradient(45deg, transparent 50%, var(--text-muted) 50%),
-                    linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
-  background-position: calc(100% - 16px) center, calc(100% - 11px) center;
+  background-image: linear-gradient(45deg, transparent 50%, var(--accent-blue) 50%),
+                    linear-gradient(135deg, var(--accent-blue) 50%, transparent 50%);
+  background-position: calc(100% - 18px) center, calc(100% - 13px) center;
   background-size: 5px 5px, 5px 5px;
   background-repeat: no-repeat;
-  transition: border-color 0.15s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .input-panel select:hover {
   border-color: var(--accent-blue);
+  background-color: rgba(139, 211, 255, 0.06);
 }
 
 .input-panel select:focus {
   outline: none;
   border-color: var(--accent-blue);
-  box-shadow: 0 0 0 3px rgba(139, 211, 255, 0.2);
+  box-shadow: 0 0 0 3px rgba(139, 211, 255, 0.15);
+}
+
+.input-panel select option {
+  background-color: #0b1020;
+  color: var(--text-primary);
+  padding: var(--space-sm);
 }
 
 /* Collapsible "more parameters" section */
@@ -441,20 +450,83 @@ button {
   font-style: normal;
 }
 
-.footer-links {
+.footer-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-md);
-  color: var(--text-muted);
-}
-
-.footer-links a {
+  align-items: center;
+  gap: var(--space-sm);
   color: var(--text-muted);
   font-size: 13px;
 }
 
-.footer-links a:hover {
+.footer-meta a {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.footer-meta a:hover {
   color: var(--accent-blue);
+}
+
+.footer-sep {
+  color: var(--border);
+}
+
+/* ---------------------------------------------------------------------
+   Tooltip system (pure CSS, no JS)
+   --------------------------------------------------------------------- */
+[data-tooltip] {
+  position: relative;
+  cursor: help;
+  border-bottom: 1px dashed var(--text-muted);
+  text-underline-offset: 3px;
+}
+
+[data-tooltip]::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  min-width: 200px;
+  max-width: 320px;
+  padding: 10px 14px;
+  background: #0e1526;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.6;
+  text-align: left;
+  white-space: normal;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 100;
+}
+
+[data-tooltip]:hover::before {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+[data-tooltip]::after {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 3px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #0e1526;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 100;
+}
+
+[data-tooltip]:hover::after {
+  opacity: 1;
 }
 
 /* ---------------------------------------------------------------------

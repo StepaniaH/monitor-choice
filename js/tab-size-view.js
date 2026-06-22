@@ -116,7 +116,7 @@
   }
 
   /* ------------------------------------------------------------------ */
-  /* Canvas — side view                                                 */
+  /* Canvas — front view (true relative scale comparison)               */
   /* ------------------------------------------------------------------ */
 
   function renderCanvas(state) {
@@ -125,7 +125,7 @@
 
     var dpr = window.devicePixelRatio || 1;
     var cssW = canvas.clientWidth || 600;
-    var cssH = canvas.clientHeight || 340;
+    var cssH = canvas.clientHeight || 380;
     canvas.width = Math.round(cssW * dpr);
     canvas.height = Math.round(cssH * dpr);
     var ctx = canvas.getContext('2d');
@@ -154,136 +154,123 @@
       };
     });
 
-    var maxScreenH = Math.max.apply(null, screens.map(function (s) { return s.heightCm; }));
-    var eyeHeight = 115; // typical seated eye height above desk surface (cm)
+    // Compute scale: fit widest screen to canvas width with padding
+    var padX = 40, padTop = 50, padBottom = 80;
+    var maxW = Math.max.apply(null, screens.map(function (s) { return s.widthCm; }));
+    var totalGap = (screens.length - 1) * 30;
+    var availW = cssW - padX * 2 - totalGap;
+    var availH = cssH - padTop - padBottom;
+    var scaleX = availW / (maxW * screens.length);
+    var scaleY = availH / maxW * (9 / 16); // height limited by 16:9 aspect
+    var scale = Math.min(scaleX, scaleY);
 
-    // Scale to fit
-    var padL = 55, padR = 30, padT = 25, padB = 55;
-    var plotW = cssW - padL - padR;
-    var plotH = cssH - padT - padB;
+    // Clamp scale so screens aren't too small
+    scale = Math.max(scale, 0.3);
 
-    var maxDepth = Math.max(distance, deskDepth) + 30;
-    var maxHeight = Math.max(maxScreenH, eyeHeight) + 20;
+    // Baseline (floor where all screens stand)
+    var baselineY = cssH - padBottom;
 
-    var scale = Math.min(plotW / maxDepth, plotH / maxHeight);
-
-    var groundY = cssH - padB;
-    var viewerX = padL + 10;
-    var viewerY = groundY - eyeHeight * scale;
-    var screenX = padL + distance * scale;
-
-    // Current screen reference
-    var currentScreen = screens.filter(function (s) { return s.isCurrent; })[0] || screens[0];
-
-    // FOV cone (behind everything)
-    if (currentScreen) {
-      var screenTopY = groundY - currentScreen.heightCm * scale;
-      ctx.fillStyle = 'rgba(100,200,100,0.06)';
-      ctx.strokeStyle = 'rgba(100,200,100,0.2)';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(viewerX, viewerY);
-      ctx.lineTo(screenX, screenTopY);
-      ctx.lineTo(screenX, groundY);
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-
-      var fov = Calc.computeHorizontalFOV(size, ar, distance);
-      ctx.fillStyle = 'rgba(100,200,100,0.6)';
-      ctx.font = '11px sans-serif';
-      ctx.textAlign = 'left';
-      ctx.fillText('视野角 ' + fov.toFixed(1) + '°', viewerX + 8, viewerY - 10);
-    }
-
-    // Desk surface
-    var deskLeft = viewerX - 15;
-    var deskRight = screenX + 30;
-    ctx.fillStyle = 'rgba(180,140,80,0.12)';
-    ctx.strokeStyle = 'rgba(200,160,100,0.4)';
-    ctx.lineWidth = 2;
-    ctx.fillRect(deskLeft, groundY - 2, deskRight - deskLeft, 5);
-    ctx.strokeRect(deskLeft, groundY - 2, deskRight - deskLeft, 5);
-
-    // Desk depth indicator
-    ctx.strokeStyle = 'rgba(200,160,100,0.3)';
-    ctx.lineWidth = 1;
-    ctx.setLineDash([3, 3]);
-    ctx.beginPath();
-    ctx.moveTo(viewerX, groundY + 10);
-    ctx.lineTo(viewerX + deskDepth * scale, groundY + 10);
-    ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.fillStyle = 'rgba(200,160,100,0.6)';
-    ctx.font = '10px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('桌深 ' + deskDepth + 'cm', viewerX + (deskDepth * scale) / 2, groundY + 24);
-
-    // Draw screens (side view — thin rectangles)
-    screens.forEach(function (s) {
-      var screenH = s.heightCm * scale;
-      var screenW = Math.max(4, s.widthCm * scale * 0.06);
-      var sx = screenX - screenW / 2;
-      var sy = groundY - screenH;
-
-      ctx.fillStyle = s.isCurrent ? 'rgba(139,211,255,0.12)' : 'rgba(255,255,255,0.04)';
-      ctx.strokeStyle = s.isCurrent ? '#8bd3ff' : 'rgba(200,200,200,0.35)';
-      ctx.lineWidth = s.isCurrent ? 2 : 1;
-      ctx.fillRect(sx, sy, screenW, screenH);
-      ctx.strokeRect(sx, sy, screenW, screenH);
-
-      // Stand
-      ctx.fillStyle = s.isCurrent ? 'rgba(139,211,255,0.3)' : 'rgba(200,200,200,0.2)';
-      ctx.fillRect(screenX - 8, groundY - 2, 16, 2);
-
-      // Label
-      ctx.fillStyle = s.isCurrent ? '#8bd3ff' : '#888';
-      ctx.font = (s.isCurrent ? 'bold ' : '') + '11px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(s.size + '″', screenX, sy - 6);
-
-      if (s.isCurrent) {
-        ctx.fillStyle = 'rgba(139,211,255,0.5)';
-        ctx.font = '9px sans-serif';
-        ctx.textAlign = 'left';
-        ctx.fillText(s.heightCm.toFixed(0) + 'cm', screenX + screenW / 2 + 4, sy + screenH / 2);
-      }
-    });
-
-    // Distance line (eye to screen center)
-    if (currentScreen) {
-      var screenCenterY = groundY - currentScreen.heightCm * scale / 2;
-      ctx.strokeStyle = '#ff9a3c';
-      ctx.lineWidth = 1.5;
-      ctx.setLineDash([6, 4]);
-      ctx.beginPath();
-      ctx.moveTo(viewerX, viewerY);
-      ctx.lineTo(screenX, screenCenterY);
-      ctx.stroke();
-      ctx.setLineDash([]);
-
-      ctx.fillStyle = '#ff9a3c';
-      ctx.font = '12px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(distance + 'cm', (viewerX + screenX) / 2, (viewerY + screenCenterY) / 2 - 6);
-    }
-
-    // Viewer (eye)
-    ctx.fillStyle = '#ff9a3c';
-    ctx.beginPath();
-    ctx.arc(viewerX, viewerY, 5, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.font = '11px sans-serif';
-    ctx.textAlign = 'right';
-    ctx.fillText('眼睛', viewerX - 8, viewerY + 4);
-
-    // Ground line
+    // Draw baseline
     ctx.strokeStyle = 'rgba(255,255,255,0.08)';
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(padL, groundY + 3);
-    ctx.lineTo(cssW - padR, groundY + 3);
+    ctx.moveTo(padX, baselineY + 2);
+    ctx.lineTo(cssW - padX, baselineY + 2);
     ctx.stroke();
+
+    // Draw screens side by side at true relative scale
+    var cursorX = padX;
+    screens.forEach(function (s) {
+      var w = s.widthCm * scale;
+      var h = s.heightCm * scale;
+      var x = cursorX + (availW / screens.length - w) / 2;
+      x = Math.max(cursorX, x);
+      var y = baselineY - h;
+
+      // Screen body
+      if (s.isCurrent) {
+        ctx.fillStyle = 'rgba(139,211,255,0.10)';
+        ctx.strokeStyle = '#8bd3ff';
+        ctx.lineWidth = 2.5;
+      } else {
+        ctx.fillStyle = 'rgba(255,255,255,0.04)';
+        ctx.strokeStyle = 'rgba(200,200,200,0.35)';
+        ctx.lineWidth = 1.5;
+      }
+
+      // Screen content area
+      var bezel = 3;
+      ctx.fillRect(x, y, w, h);
+      ctx.strokeRect(x, y, w, h);
+
+      // Inner screen (bezel effect)
+      ctx.fillStyle = s.isCurrent ? 'rgba(139,211,255,0.04)' : 'rgba(255,255,255,0.02)';
+      ctx.fillRect(x + bezel, y + bezel, w - bezel * 2, h - bezel * 2);
+
+      // Stand
+      var standW = Math.max(8, w * 0.15);
+      var standH = 12;
+      ctx.fillStyle = s.isCurrent ? 'rgba(139,211,255,0.4)' : 'rgba(200,200,200,0.2)';
+      ctx.fillRect(x + w / 2 - 1, baselineY - standH + 2, 2, standH);
+      ctx.fillRect(x + w / 2 - standW / 2, baselineY - 3, standW, 3);
+
+      // Size label
+      ctx.fillStyle = s.isCurrent ? '#8bd3ff' : '#8899aa';
+      ctx.font = (s.isCurrent ? 'bold 16px ' : '14px ') + 'system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(s.size + '″', x + w / 2, y - 12);
+
+      // Dimensions
+      ctx.fillStyle = s.isCurrent ? 'rgba(139,211,255,0.6)' : 'rgba(150,160,170,0.5)';
+      ctx.font = '10px system-ui, sans-serif';
+      ctx.fillText(s.widthCm.toFixed(0) + '×' + s.heightCm.toFixed(0) + 'cm',
+                   x + w / 2, baselineY + 18);
+
+      // "当前" badge
+      if (s.isCurrent) {
+        ctx.fillStyle = '#8bd3ff';
+        ctx.font = 'bold 9px system-ui, sans-serif';
+        ctx.fillText('当前', x + w / 2, baselineY + 32);
+      }
+
+      cursorX += availW / screens.length;
+    });
+
+    // Viewing distance bar (bottom)
+    var barY = cssH - 30;
+    var barStartX = padX;
+    var barEndX = padX + Math.min(distance * scale * 1.5, cssW - padX * 2);
+
+    ctx.strokeStyle = '#ff9a3c';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(barStartX, barY);
+    ctx.lineTo(barEndX, barY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Arrow heads
+    [barStartX, barEndX].forEach(function (px) {
+      ctx.fillStyle = '#ff9a3c';
+      ctx.beginPath();
+      ctx.moveTo(px, barY);
+      ctx.lineTo(px + (px === barStartX ? 6 : -6), barY - 4);
+      ctx.lineTo(px + (px === barStartX ? 6 : -6), barY + 4);
+      ctx.fill();
+    });
+
+    ctx.fillStyle = '#ff9a3c';
+    ctx.font = 'bold 12px system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('观看距离 ' + distance + 'cm', (barStartX + barEndX) / 2, barY - 8);
+
+    // FOV indicator (top right)
+    var fov = Calc.computeHorizontalFOV(size, ar, distance);
+    ctx.fillStyle = 'rgba(100,200,100,0.7)';
+    ctx.font = '11px system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('水平视野角 ' + fov.toFixed(1) + '°', cssW - padX, 25);
 
     ctx.textAlign = 'left';
   }

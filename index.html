@@ -70,15 +70,15 @@
         <div class="sharp-stats">
           <div class="sharp-stat">
             <span class="value" id="sharp-ppi">—</span>
-            <span class="label">PPI 像素密度</span>
+            <span class="label"><span data-tooltip="Pixels Per Inch：每英寸像素数，衡量屏幕像素密度。数值越高画面越细腻。">PPI</span> 像素密度</span>
           </div>
           <div class="sharp-stat">
             <span class="value" id="sharp-ppd">—</span>
-            <span class="label">PPD 每度像素</span>
+            <span class="label"><span data-tooltip="Pixels Per Degree：每度视角像素数，衡量人眼实际感知的清晰度。≥60 即达到 Apple Retina 标准，肉眼无法分辨单个像素。">PPD</span> 每度像素</span>
           </div>
           <div class="sharp-stat">
             <span class="value" id="sharp-retina">—</span>
-            <span class="label">视网膜距离</span>
+            <span class="label"><span data-tooltip="超过此距离后，人眼无法分辨单个像素，达到 Retina 清晰度标准。距离越近越清晰。">视网膜距离</span></span>
           </div>
         </div>
         <div class="sharp-ppd-meter-wrap">
@@ -129,29 +129,29 @@
       <div class="size-panel">
         <div class="size-stats">
           <div class="size-stat">
-            <span class="stat-label">屏幕尺寸</span>
+            <span class="stat-label"><span data-tooltip="屏幕对角线对应的物理宽度和高度，基于宽高比计算。">屏幕尺寸</span></span>
             <span class="stat-value" id="size-dimensions">—</span>
           </div>
           <div class="size-stat">
-            <span class="stat-label">水平视野角</span>
+            <span class="stat-label"><span data-tooltip="水平视野角：在当前观看距离下，屏幕水平方向覆盖的人眼视野范围。30°-40° 适合桌面工作，40°-60° 适合影音沉浸。">水平视野角</span></span>
             <span class="stat-value" id="size-fov">—</span>
           </div>
           <div class="size-stat">
-            <span class="stat-label">THX 推荐距离</span>
+            <span class="stat-label"><span data-tooltip="THX 认证推荐距离：对角线尺寸 ÷ 0.84，产生约 40° 的水平视野角，是沉浸式观影的参考标准。">THX 推荐距离</span></span>
             <span class="stat-value" id="size-thx">—</span>
           </div>
           <div class="size-stat">
-            <span class="stat-label">SMPTE 推荐范围</span>
+            <span class="stat-label"><span data-tooltip="SMPTE（电影电视工程师协会）推荐距离范围，对应约 30°-45° 的水平视野角，是混合使用的参考区间。">SMPTE 推荐范围</span></span>
             <span class="stat-value" id="size-smpte">—</span>
           </div>
           <div class="size-stat" id="size-desk-stat">
-            <span class="stat-label">桌深限制</span>
+            <span class="stat-label"><span data-tooltip="基于桌深计算的物理约束：可用深度 = 桌深 - 25cm（10cm 人眼到桌沿 + 15cm 支架），推算最大可用屏幕对角线。">桌深限制</span></span>
             <span class="stat-value" id="size-desk">—</span>
           </div>
         </div>
         <div class="size-canvas-container">
           <div class="canvas-header">
-            <h3>桌面侧视图</h3>
+            <h3>屏幕比例对比 <span class="canvas-hint">（真实尺寸比例）</span></h3>
           </div>
           <div class="canvas-wrap">
             <canvas id="sizeCanvas" height="340"></canvas>
@@ -173,7 +173,7 @@
         <div class="color-controls" id="gamutSelector"></div>
         <div class="color-canvas-container">
           <div class="canvas-header">
-            <h3>CIE 1931 色度图</h3>
+            <h3><span data-tooltip="CIE 1931 色度图：国际照明委员会定义的标准色度图，展示了人眼可见的所有颜色。三角形的三个顶点代表显示器三原色（红绿蓝）在色度坐标中的位置，三角形面积越大，显示器能显示的颜色范围越广。">CIE 1931 色度图</span></h3>
           </div>
           <div class="canvas-wrap">
             <canvas id="colorCanvas" height="480"></canvas>
@@ -184,7 +184,7 @@
           <div class="table-wrap" id="panelTable"></div>
         </div>
         <div class="gamut-needs">
-          <h3>场景色域需求</h3>
+          <h3><span data-tooltip="不同使用场景对色域覆盖的要求不同。例如编程仅需 sRGB 100%，而 HDR 创作需要 BT.2020 70%+。选择面板时应确保其覆盖你的场景需求。">场景色域需求</span></h3>
           <ul id="gamutNeeds"></ul>
         </div>
       </div>
@@ -245,8 +245,12 @@
         <span class="lock">🔒</span>
         <span>所有数据在本地浏览器中计算处理，不上传任何信息，不使用第三方追踪。</span>
       </div>
-      <div class="footer-links">
-        <a href="#">GitHub</a>
+      <div class="footer-meta">
+        <span>自托管静态站点</span>
+        <span class="footer-sep">·</span>
+        <a href="https://github.com/StepaniaH/monitor-choice" rel="noopener noreferrer">GitHub</a>
+        <span class="footer-sep">·</span>
+        <a href="https://opensource.org/license/mit" rel="noopener noreferrer">MIT License</a>
       </div>
     </footer>
   </div>
