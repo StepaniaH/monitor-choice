@@ -117,7 +117,7 @@
 
     var dpr = window.devicePixelRatio || 1;
     var cssW = canvas.clientWidth || 600;
-    var cssH = canvas.clientHeight || 340;
+    var cssH = canvas.clientHeight || 200;
     canvas.width = Math.round(cssW * dpr);
     canvas.height = Math.round(cssH * dpr);
     var ctx = canvas.getContext('2d');
@@ -139,9 +139,9 @@
       return { size: s, widthCm: dims.widthCm, heightCm: dims.heightCm, isCurrent: s === size };
     });
 
-    var padX = 40, padTop = 50, padBottom = 80;
+    var padX = 30, padTop = 30, padBottom = 50;
     var maxW = Math.max.apply(null, screens.map(function (s) { return s.widthCm; }));
-    var availW = cssW - padX * 2 - (screens.length - 1) * 30;
+    var availW = cssW - padX * 2 - (screens.length - 1) * 20;
     var availH = cssH - padTop - padBottom;
     var scale = Math.min(availW / (maxW * screens.length), availH / maxW * (9 / 16));
     scale = Math.max(scale, 0.3);
@@ -313,7 +313,7 @@
     var scaleScale = 1.2;
     var focal = cssW * 0.9;
     var centerX = cssW / 2;
-    var centerY = cssH * 0.55;
+    var centerY = cssH * 0.65;
 
     // Scene geometry (all in cm, scaled)
     var s = scaleScale;

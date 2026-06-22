@@ -235,12 +235,12 @@
    --------------------------------------------------------------------- */
 .scene3d-container .canvas-wrap.scene3d-wrap {
   position: relative;
-  min-height: 400px;
+  min-height: 360px;
 }
 
 .scene3d-container canvas {
   cursor: grab;
-  min-height: 400px;
+  min-height: 360px;
 }
 
 .scene3d-container canvas:active {
@@ -265,6 +265,19 @@
   font-size: 12px;
   font-weight: 400;
   color: var(--text-muted);
+}
+
+/* Compare container — compact horizontal strip */
+.compare-container {
+  padding: var(--space-md) var(--space-lg);
+}
+
+.compare-container .canvas-wrap.compare-wrap {
+  min-height: 180px;
+}
+
+.compare-container canvas {
+  min-height: 180px;
 }
 
 /* ---------------------------------------------------------------------

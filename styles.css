@@ -195,7 +195,7 @@ button {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   padding: var(--space-md) var(--space-lg);
-  margin-bottom: var(--space-xl);
+  margin-bottom: var(--space-2xl);
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
@@ -324,7 +324,8 @@ button {
   flex-wrap: wrap;
   gap: var(--space-sm);
   align-items: center;
-  padding-top: var(--space-sm);
+  padding-top: var(--space-md);
+  padding-bottom: var(--space-xs);
   border-top: 1px solid var(--border);
 }
 
