@@ -172,13 +172,29 @@
     });
 
     // Marker
-    var markerX = Math.min(cssW - 1, Math.max(0, (ppd / maxPPD) * cssW));
+    var markerX = Math.min(cssW - 2, Math.max(2, (ppd / maxPPD) * cssW));
+
+    // Marker glow (for visibility on colored bg)
+    ctx.shadowColor = '#fff';
+    ctx.shadowBlur = 6;
     ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.moveTo(markerX, 0);
-    ctx.lineTo(markerX, cssH);
+    ctx.moveTo(markerX, -2);
+    ctx.lineTo(markerX, cssH + 2);
     ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // Retina threshold line (PPD=60)
+    var retinaX = (Calc.PPD_THRESHOLDS.RETINA / maxPPD) * cssW;
+    ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(retinaX, 0);
+    ctx.lineTo(retinaX, cssH);
+    ctx.stroke();
+    ctx.setLineDash([]);
   }
 
   /* ------------------------------------------------------------------ */

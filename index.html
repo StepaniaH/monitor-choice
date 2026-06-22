@@ -19,24 +19,25 @@
 
     <!-- ===== Input Panel (sticky, always visible) ===== -->
     <div class="input-panel">
-      <div class="input-group">
-        <label for="distanceRange">观看距离 <span class="value-display"><span id="distanceValue">80</span>cm</span></label>
-        <input type="range" id="distanceRange" min="40" max="260" value="80">
+      <div class="input-row">
+        <div class="input-group">
+          <label for="distanceRange">观看距离 <span class="value-display"><span id="distanceValue">80</span>cm</span></label>
+          <input type="range" id="distanceRange" min="40" max="260" value="80">
+        </div>
+        <div class="input-group">
+          <label for="sizeRange">屏幕尺寸 <span class="value-display"><span id="sizeValue">32</span>″</span></label>
+          <input type="range" id="sizeRange" min="24" max="75" value="32">
+        </div>
+        <div class="input-group">
+          <label for="resolutionSelect">分辨率</label>
+          <select id="resolutionSelect"></select>
+        </div>
+        <div class="input-group">
+          <label for="deskDepthRange">桌深 <span class="value-display"><span id="deskDepthValue">80</span>cm</span></label>
+          <input type="range" id="deskDepthRange" min="50" max="120" value="80">
+        </div>
+        <button class="more-params-toggle" id="moreParamsToggle">更多参数</button>
       </div>
-      <div class="input-group">
-        <label for="sizeRange">屏幕尺寸 <span class="value-display"><span id="sizeValue">32</span>″</span></label>
-        <input type="range" id="sizeRange" min="24" max="75" value="32">
-      </div>
-      <div class="input-group">
-        <label for="resolutionSelect">分辨率</label>
-        <select id="resolutionSelect"></select>
-      </div>
-      <div class="input-group">
-        <label for="deskDepthRange">桌深 <span class="value-display"><span id="deskDepthValue">80</span>cm</span></label>
-        <input type="range" id="deskDepthRange" min="50" max="120" value="80">
-      </div>
-
-      <button class="more-params-toggle" id="moreParamsToggle">更多参数</button>
       <div class="more-params" id="moreParams">
         <div class="input-group">
           <label for="workRange">工作占比 <span class="value-display"><span id="workValue">70</span>%</span></label>
@@ -47,7 +48,6 @@
           <input type="range" id="mediaRange" min="0" max="100" value="30">
         </div>
       </div>
-
       <div class="settings-row">
         <button class="settings-btn" id="saveBtn">记住设置</button>
         <button class="settings-btn danger" id="clearBtn">清除数据</button>

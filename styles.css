@@ -196,15 +196,23 @@ button {
   -webkit-backdrop-filter: blur(20px);
   padding: var(--space-md) var(--space-lg);
   margin-bottom: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.input-panel .input-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: var(--space-md) var(--space-lg);
+  grid-template-columns: 1fr 1fr 1.3fr 1fr auto;
+  gap: var(--space-md);
+  align-items: end;
 }
 
 .input-panel .input-group {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: 6px;
+  min-width: 0;
 }
 
 .input-panel label {
@@ -275,11 +283,10 @@ button {
 
 /* Collapsible "more parameters" section */
 .input-panel .more-params {
-  grid-column: 1 / -1;
   display: none;
-  flex-direction: column;
+  flex-direction: row;
   gap: var(--space-lg);
-  padding-top: var(--space-lg);
+  padding-top: var(--space-md);
   border-top: 1px solid var(--border);
 }
 
@@ -287,16 +294,21 @@ button {
   display: flex;
 }
 
+.input-panel .more-params .input-group {
+  flex: 1;
+}
+
 .input-panel .more-params-toggle {
-  grid-column: 1 / -1;
-  justify-self: start;
+  align-self: end;
+  height: 34px;
   background: none;
   border: 1px solid var(--border);
   color: var(--text-muted);
   font-size: 13px;
-  padding: var(--space-xs) var(--space-md);
+  padding: 0 var(--space-md);
   border-radius: var(--radius-pill);
   cursor: pointer;
+  white-space: nowrap;
   transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
 
@@ -308,12 +320,11 @@ button {
 
 /* Settings buttons row */
 .input-panel .settings-row {
-  grid-column: 1 / -1;
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-sm);
   align-items: center;
-  padding-top: var(--space-md);
+  padding-top: var(--space-sm);
   border-top: 1px solid var(--border);
 }
 
@@ -454,6 +465,7 @@ button {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   gap: var(--space-sm);
   color: var(--text-muted);
   font-size: 13px;
@@ -538,9 +550,19 @@ button {
   }
 
   .input-panel {
-    grid-template-columns: 1fr;
-    position: relative;
-    top: 0;
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .input-panel .input-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .input-panel .input-row .more-params-toggle {
+    grid-column: 1 / -1;
+  }
+
+  .input-panel .more-params {
+    flex-direction: column;
   }
 
   .tab-nav {
