@@ -230,6 +230,43 @@
   background: currentColor;
 }
 
+/* --------------------------------------------------------------------- */
+   3D Scene canvas
+   --------------------------------------------------------------------- */
+.scene3d-container .canvas-wrap.scene3d-wrap {
+  position: relative;
+  min-height: 400px;
+}
+
+.scene3d-container canvas {
+  cursor: grab;
+  min-height: 400px;
+}
+
+.scene3d-container canvas:active {
+  cursor: grabbing;
+}
+
+.scene3d-hint {
+  position: absolute;
+  bottom: 12px;
+  right: 16px;
+  font-size: 11px;
+  color: var(--text-muted);
+  background: rgba(7, 11, 22, 0.7);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.canvas-hint {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
 /* ---------------------------------------------------------------------
    Responsive
    --------------------------------------------------------------------- */
