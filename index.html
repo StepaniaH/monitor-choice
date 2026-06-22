@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>显示器参数实验室</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page">
+    <!-- ===== App Header ===== -->
+    <header class="app-header">
+      <div class="logo">🖥</div>
+      <div class="header-text">
+        <h1>显示器参数实验室</h1>
+        <p class="subtitle">理解每个参数的意义，做出自己的选择</p>
+      </div>
+    </header>
+
+    <!-- ===== Input Panel (sticky, always visible) ===== -->
+    <div class="input-panel">
+      <div class="input-group">
+        <label for="distanceRange">观看距离 <span class="value-display"><span id="distanceValue">80</span>cm</span></label>
+        <input type="range" id="distanceRange" min="40" max="260" value="80">
+      </div>
+      <div class="input-group">
+        <label for="sizeRange">屏幕尺寸 <span class="value-display"><span id="sizeValue">32</span>″</span></label>
+        <input type="range" id="sizeRange" min="24" max="75" value="32">
+      </div>
+      <div class="input-group">
+        <label for="resolutionSelect">分辨率</label>
+        <select id="resolutionSelect"></select>
+      </div>
+      <div class="input-group">
+        <label for="deskDepthRange">桌深 <span class="value-display"><span id="deskDepthValue">80</span>cm</span></label>
+        <input type="range" id="deskDepthRange" min="50" max="120" value="80">
+      </div>
+
+      <button class="more-params-toggle" id="moreParamsToggle">更多参数</button>
+      <div class="more-params" id="moreParams">
+        <div class="input-group">
+          <label for="workRange">工作占比 <span class="value-display"><span id="workValue">70</span>%</span></label>
+          <input type="range" id="workRange" min="0" max="100" value="70">
+        </div>
+        <div class="input-group">
+          <label for="mediaRange">影音占比 <span class="value-display"><span id="mediaValue">30</span>%</span></label>
+          <input type="range" id="mediaRange" min="0" max="100" value="30">
+        </div>
+      </div>
+
+      <div class="settings-row">
+        <button class="settings-btn" id="saveBtn">记住设置</button>
+        <button class="settings-btn danger" id="clearBtn">清除数据</button>
+        <span class="storage-hint">数据保存在本地浏览器</span>
+      </div>
+    </div>
+
+    <!-- ===== Tab Navigation ===== -->
+    <nav class="tab-nav">
+      <button class="tab-nav-btn active" data-tab="sharpness">清晰度实验室</button>
+      <button class="tab-nav-btn" data-tab="sizeView">尺寸与距离</button>
+      <button class="tab-nav-btn" data-tab="colorLab">色彩空间</button>
+      <button class="tab-nav-btn" data-tab="scenarios">场景参考</button>
+      <button class="tab-nav-btn" data-tab="panelGuide">面板百科</button>
+    </nav>
+
+    <!-- ===== Sharpness Tab ===== -->
+    <section class="tab-content active" data-tab="sharpness">
+      <div class="sharpness-panel">
+        <div class="sharp-stats">
+          <div class="sharp-stat">
+            <span class="value" id="sharp-ppi">—</span>
+            <span class="label">PPI 像素密度</span>
+          </div>
+          <div class="sharp-stat">
+            <span class="value" id="sharp-ppd">—</span>
+            <span class="label">PPD 每度像素</span>
+          </div>
+          <div class="sharp-stat">
+            <span class="value" id="sharp-retina">—</span>
+            <span class="label">视网膜距离</span>
+          </div>
+        </div>
+        <div class="sharp-ppd-meter-wrap">
+          <div class="meter-header">
+            <span class="ppd-label">清晰度等级</span>
+            <span class="ppd-target">目标 PPD ≥ 60</span>
+          </div>
+          <canvas id="sharp-ppd-meter"></canvas>
+          <div class="ppd-scale">
+            <span>差</span><span>一般</span><span>良好</span><span>优秀</span><span>视网膜</span>
+          </div>
+        </div>
+        <div class="sharp-retina-callout" id="sharp-retina-callout"></div>
+        <div class="sharp-comparison">
+          <div class="sharp-canvas-card" id="sharp-card-0">
+            <div class="card-header">
+              <span class="card-title">—</span>
+              <span class="card-subtitle">—</span>
+            </div>
+            <div class="canvas-container">
+              <canvas id="sharp-canvas-0" height="180"></canvas>
+            </div>
+          </div>
+          <div class="sharp-canvas-card" id="sharp-card-1">
+            <div class="card-header">
+              <span class="card-title">—</span>
+              <span class="card-subtitle">—</span>
+            </div>
+            <div class="canvas-container">
+              <canvas id="sharp-canvas-1" height="180"></canvas>
+            </div>
+          </div>
+          <div class="sharp-canvas-card" id="sharp-card-2">
+            <div class="card-header">
+              <span class="card-title">—</span>
+              <span class="card-subtitle">—</span>
+            </div>
+            <div class="canvas-container">
+              <canvas id="sharp-canvas-2" height="180"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Size View Tab ===== -->
+    <section class="tab-content" data-tab="sizeView">
+      <div class="size-panel">
+        <div class="size-stats">
+          <div class="size-stat">
+            <span class="stat-label">屏幕尺寸</span>
+            <span class="stat-value" id="size-dimensions">—</span>
+          </div>
+          <div class="size-stat">
+            <span class="stat-label">水平视野角</span>
+            <span class="stat-value" id="size-fov">—</span>
+          </div>
+          <div class="size-stat">
+            <span class="stat-label">THX 推荐距离</span>
+            <span class="stat-value" id="size-thx">—</span>
+          </div>
+          <div class="size-stat">
+            <span class="stat-label">SMPTE 推荐范围</span>
+            <span class="stat-value" id="size-smpte">—</span>
+          </div>
+          <div class="size-stat" id="size-desk-stat">
+            <span class="stat-label">桌深限制</span>
+            <span class="stat-value" id="size-desk">—</span>
+          </div>
+        </div>
+        <div class="size-canvas-container">
+          <div class="canvas-header">
+            <h3>桌面侧视图</h3>
+          </div>
+          <div class="canvas-wrap">
+            <canvas id="sizeCanvas" height="340"></canvas>
+          </div>
+        </div>
+        <div class="size-controls" id="sizeSelector"></div>
+        <div class="size-legend">
+          <div class="legend-item"><span class="legend-dot solid" style="color:#8bd3ff;"></span>当前尺寸</div>
+          <div class="legend-item"><span class="legend-dot" style="color:rgba(200,200,200,0.5);"></span>对比尺寸</div>
+          <div class="legend-item"><span class="legend-dot" style="color:#ff9a3c;"></span>观看距离</div>
+          <div class="legend-item"><span class="legend-dot" style="color:rgba(100,200,100,0.5);"></span>视野范围</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Color Lab Tab ===== -->
+    <section class="tab-content" data-tab="colorLab">
+      <div class="color-panel">
+        <div class="color-controls" id="gamutSelector"></div>
+        <div class="color-canvas-container">
+          <div class="canvas-header">
+            <h3>CIE 1931 色度图</h3>
+          </div>
+          <div class="canvas-wrap">
+            <canvas id="colorCanvas" height="480"></canvas>
+          </div>
+        </div>
+        <div class="panel-comparison">
+          <h3>面板色彩对比</h3>
+          <div class="table-wrap" id="panelTable"></div>
+        </div>
+        <div class="gamut-needs">
+          <h3>场景色域需求</h3>
+          <ul id="gamutNeeds"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Scenarios Tab ===== -->
+    <section class="tab-content" data-tab="scenarios">
+      <div class="scenario-panel">
+        <div class="scenario-filters" id="scenarioFilters"></div>
+        <div class="scenario-grid" id="scenarioGrid"></div>
+      </div>
+    </section>
+
+    <!-- ===== Panel Guide Tab ===== -->
+    <section class="tab-content" data-tab="panelGuide">
+      <div class="panel-guide">
+        <div class="panel-accordion" id="panelAccordion"></div>
+
+        <div class="glass-card" style="padding:var(--space-lg);">
+          <h3 style="font-size:18px;font-weight:700;margin-bottom:var(--space-md);">残影与烧屏</h3>
+          <div id="burnInInfo"></div>
+        </div>
+
+        <div class="glass-card" style="padding:var(--space-lg);">
+          <h3 style="font-size:18px;font-weight:700;margin-bottom:var(--space-md);">刷新率对比</h3>
+          <div id="refreshInfo"></div>
+        </div>
+
+        <div class="interface-calculator">
+          <h3>接口带宽计算器</h3>
+          <p class="calc-description">输入目标分辨率、刷新率和色深，计算所需带宽并查看哪些接口可以支持。</p>
+          <div class="calc-inputs">
+            <div class="calc-input-group">
+              <label for="bwWidth">分辨率宽 (px)</label>
+              <input type="number" id="bwWidth" value="3840" min="640" max="7680">
+            </div>
+            <div class="calc-input-group">
+              <label for="bwHeight">分辨率高 (px)</label>
+              <input type="number" id="bwHeight" value="2160" min="480" max="4320">
+            </div>
+            <div class="calc-input-group">
+              <label for="bwRefresh">刷新率 (Hz)</label>
+              <input type="number" id="bwRefresh" value="60" min="24" max="240">
+            </div>
+            <div class="calc-input-group">
+              <label for="bwDepth">色深 (bit)</label>
+              <input type="number" id="bwDepth" value="8" min="6" max="16">
+            </div>
+          </div>
+          <div class="calc-result" id="bwResult"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Footer ===== -->
+    <footer class="page-footer">
+      <div class="privacy-notice">
+        <span class="lock">🔒</span>
+        <span>所有数据在本地浏览器中计算处理，不上传任何信息，不使用第三方追踪。</span>
+      </div>
+      <div class="footer-links">
+        <a href="#">GitHub</a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ===== Scripts (order matters) ===== -->
+  <script src="js/constants.js"></script>
+  <script src="js/calc.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/data-scenarios.js"></script>
+  <script src="js/data-panels.js"></script>
+  <script src="js/tab-sharpness.js"></script>
+  <script src="js/tab-size-view.js"></script>
+  <script src="js/tab-color-lab.js"></script>
+  <script src="js/tab-scenarios.js"></script>
+  <script src="js/tab-panel-guide.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

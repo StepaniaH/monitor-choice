@@ -1,0 +1,510 @@
+/* =====================================================================
+   monitor-choice — Global Stylesheet
+   Dark glassmorphism theme · vanilla CSS · zero external resources
+   ===================================================================== */
+
+@import url('./css/sharpness.css');
+@import url('./css/size-view.css');
+@import url('./css/color-lab.css');
+@import url('./css/scenarios.css');
+@import url('./css/panel-guide.css');
+
+/* ---------------------------------------------------------------------
+   Design tokens
+   --------------------------------------------------------------------- */
+:root {
+  color-scheme: dark;
+
+  /* Backgrounds */
+  --bg-base: #0b1020;
+  --bg-card: rgba(255, 255, 255, 0.08);
+  --bg-card-strong: rgba(255, 255, 255, 0.13);
+
+  /* Text */
+  --text-primary: #f5f7fb;
+  --text-muted: #aab3c5;
+
+  /* Borders & accents */
+  --border: rgba(255, 255, 255, 0.14);
+  --accent-blue: #8bd3ff;
+  --accent-purple: #b39cff;
+
+  /* Semantic */
+  --good-green: #8ff0b2;
+  --warn-yellow: #ffd37a;
+  --bad-red: #ff9aa2;
+
+  /* Typography */
+  --font: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Fira Code",
+               "JetBrains Mono", Consolas, monospace;
+
+  /* Spacing scale */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+  --space-2xl: 64px;
+
+  /* Radius scale */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 28px;
+  --radius-pill: 999px;
+
+  /* Reusable shadow */
+  --shadow-card: 0 20px 80px rgba(0, 0, 0, 0.25);
+  --shadow-sticky: 0 12px 40px rgba(0, 0, 0, 0.35);
+
+  /* Gradient used by active pills / accents */
+  --gradient-accent: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+
+  /* Glass surface */
+  --glass-bg: linear-gradient(145deg, var(--bg-card), rgba(255, 255, 255, 0.04));
+  --glass-bg-strong: linear-gradient(145deg, var(--bg-card-strong), rgba(255, 255, 255, 0.06));
+}
+
+/* ---------------------------------------------------------------------
+   Reset & base
+   --------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font);
+  background:
+    radial-gradient(circle at 20% 0%, rgba(139, 211, 255, 0.24), transparent 30%),
+    radial-gradient(circle at 80% 10%, rgba(179, 156, 255, 0.22), transparent 34%),
+    var(--bg-base);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4 {
+  margin: 0;
+  font-weight: 700;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--accent-blue);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+a:hover {
+  color: var(--accent-purple);
+}
+
+button {
+  font-family: inherit;
+}
+
+/* ---------------------------------------------------------------------
+   Page shell
+   --------------------------------------------------------------------- */
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-lg) var(--space-2xl);
+}
+
+/* ---------------------------------------------------------------------
+   App header
+   --------------------------------------------------------------------- */
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+  flex-wrap: wrap;
+}
+
+.app-header .logo {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-md);
+  background: var(--gradient-accent);
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+  box-shadow: 0 10px 30px rgba(139, 211, 255, 0.3);
+}
+
+.app-header .header-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.app-header h1 {
+  font-size: clamp(28px, 5vw, 52px);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+}
+
+.app-header .subtitle {
+  margin-top: var(--space-sm);
+  max-width: 720px;
+  color: var(--text-muted);
+  font-size: clamp(15px, 2vw, 18px);
+  line-height: 1.7;
+}
+
+/* ---------------------------------------------------------------------
+   Reusable glass card utility (used across tabs)
+   --------------------------------------------------------------------- */
+.glass-card {
+  border: 1px solid var(--border);
+  background: var(--glass-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+/* ---------------------------------------------------------------------
+   Input panel (sticky, always visible)
+   --------------------------------------------------------------------- */
+.input-panel {
+  position: sticky;
+  top: var(--space-md);
+  z-index: 50;
+  border: 1px solid var(--border);
+  background: var(--glass-bg-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sticky);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-xl);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-lg);
+}
+
+.input-panel .input-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.input-panel label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.input-panel label .value-display {
+  color: var(--text-primary);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.input-panel input[type="range"] {
+  width: 100%;
+  height: 6px;
+  accent-color: var(--accent-blue);
+  cursor: grab;
+  border-radius: var(--radius-pill);
+}
+
+.input-panel input[type="range"]:active {
+  cursor: grabbing;
+}
+
+.input-panel select {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  font-family: var(--font);
+  font-size: 14px;
+  color: var(--text-primary);
+  background-color: rgba(11, 16, 32, 0.9);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-muted) 50%),
+                    linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+  background-position: calc(100% - 16px) center, calc(100% - 11px) center;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  transition: border-color 0.15s ease;
+}
+
+.input-panel select:hover {
+  border-color: var(--accent-blue);
+}
+
+.input-panel select:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px rgba(139, 211, 255, 0.2);
+}
+
+/* Collapsible "more parameters" section */
+.input-panel .more-params {
+  grid-column: 1 / -1;
+  display: none;
+  flex-direction: column;
+  gap: var(--space-lg);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--border);
+}
+
+.input-panel .more-params.expanded {
+  display: flex;
+}
+
+.input-panel .more-params-toggle {
+  grid-column: 1 / -1;
+  justify-self: start;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 13px;
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.input-panel .more-params-toggle:hover {
+  color: var(--text-primary);
+  border-color: var(--accent-blue);
+  background: rgba(139, 211, 255, 0.08);
+}
+
+/* Settings buttons row */
+.input-panel .settings-row {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  align-items: center;
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--border);
+}
+
+.input-panel .settings-btn {
+  padding: var(--space-xs) var(--space-md);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+.input-panel .settings-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--accent-blue);
+}
+
+.input-panel .settings-btn:active {
+  transform: scale(0.97);
+}
+
+.input-panel .settings-btn.danger {
+  color: var(--bad-red);
+  border-color: rgba(255, 154, 162, 0.3);
+}
+
+.input-panel .settings-btn.danger:hover {
+  background: rgba(255, 154, 162, 0.1);
+  border-color: var(--bad-red);
+}
+
+.input-panel .storage-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-left: var(--space-sm);
+}
+
+/* ---------------------------------------------------------------------
+   Tab navigation
+   --------------------------------------------------------------------- */
+.tab-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xl);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--border);
+}
+
+.tab-nav-btn {
+  padding: var(--space-sm) var(--space-lg);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: color 0.18s ease, background 0.18s ease,
+              border-color 0.18s ease, transform 0.1s ease;
+  white-space: nowrap;
+}
+
+.tab-nav-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.tab-nav-btn.active {
+  color: #07111f;
+  background: var(--gradient-accent);
+  border-color: transparent;
+  box-shadow: 0 6px 20px rgba(139, 211, 255, 0.25);
+}
+
+.tab-nav-btn.active:hover {
+  color: #07111f;
+  background: var(--gradient-accent);
+}
+
+/* ---------------------------------------------------------------------
+   Tab content
+   --------------------------------------------------------------------- */
+.tab-content {
+  display: none;
+  animation: tab-fade-in 0.3s ease;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+@keyframes tab-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------------------------------------------------------------------
+   Footer
+   --------------------------------------------------------------------- */
+.page-footer {
+  margin-top: var(--space-2xl);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.privacy-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+.privacy-notice .lock {
+  flex-shrink: 0;
+  font-style: normal;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  color: var(--text-muted);
+}
+
+.footer-links a {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.footer-links a:hover {
+  color: var(--accent-blue);
+}
+
+/* ---------------------------------------------------------------------
+   Responsive
+   --------------------------------------------------------------------- */
+@media (max-width: 920px) {
+  .page {
+    padding: var(--space-lg) var(--space-md) var(--space-xl);
+  }
+
+  .input-panel {
+    grid-template-columns: 1fr;
+    position: relative;
+    top: 0;
+  }
+
+  .tab-nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    padding-bottom: var(--space-sm);
+  }
+
+  .tab-nav::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .tab-nav-btn {
+    flex-shrink: 0;
+  }
+
+  .app-header {
+    gap: var(--space-md);
+  }
+
+  .app-header .logo {
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 560px) {
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .input-panel {
+    padding: var(--space-md);
+  }
+}
