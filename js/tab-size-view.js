@@ -53,6 +53,15 @@
     }
   }
 
+  /** Shortcut: read a canvas CSS variable. */
+  function CA(name) {
+    return window.ThemeManager ? ThemeManager.getCanvasColor(name) : '';
+  }
+  /** Return current theme's canvas background color. */
+  function getCanvasBg() {
+    return window.ThemeManager ? ThemeManager.getCanvasBg() : '#232634';
+  }
+
   /* ------------------------------------------------------------------ */
   /* Stats                                                              */
   /* ------------------------------------------------------------------ */
@@ -81,7 +90,7 @@
 
     var deskEl = document.getElementById('size-desk');
     var deskStat = document.getElementById('size-desk-stat');
-    if (deskEl) deskEl.textContent = '可用 ' + Math.round(desk.usableDepthCm) + 'cm / 最大 ' + Math.round(desk.maxDiagonalInch) + '″';
+    if (deskEl) deskEl.textContent = I18n.t('size.desk.usable', { usable: Math.round(desk.usableDepthCm), max: Math.round(desk.maxDiagonalInch) });
     if (deskStat) {
       deskStat.classList.remove('warn', 'bad');
       if (size > desk.maxDiagonalInch) deskStat.classList.add('bad');
@@ -97,7 +106,7 @@
     var container = document.getElementById('sizeSelector');
     if (!container) return;
     var availableSizes = [24, 27, 32, 38, 42, 48, 55, 65, 75];
-    var html = '<span class="control-label">对比尺寸：</span>';
+    var html = '<span class="control-label">' + I18n.t('size.compareSizes') + '：</span>';
     availableSizes.forEach(function (s) {
       var cls = 'size-pill';
       if (selectedSizes.indexOf(s) !== -1) cls += ' active';
@@ -123,7 +132,7 @@
     var ctx = canvas.getContext('2d');
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    ctx.fillStyle = '#070b16';
+    ctx.fillStyle = getCanvasBg();
     ctx.fillRect(0, 0, cssW, cssH);
 
     var size = state.size;
@@ -139,7 +148,7 @@
       return { size: s, widthCm: dims.widthCm, heightCm: dims.heightCm, isCurrent: s === size };
     });
 
-    var padX = 30, padTop = 30, padBottom = 50;
+    var padX = 30, padTop = 12, padBottom = 72;
     var maxW = Math.max.apply(null, screens.map(function (s) { return s.widthCm; }));
     var availW = cssW - padX * 2 - (screens.length - 1) * 20;
     var availH = cssH - padTop - padBottom;
@@ -148,7 +157,7 @@
 
     var baselineY = cssH - padBottom;
 
-    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+    ctx.strokeStyle = CA('grid');
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(padX, baselineY + 2);
@@ -163,41 +172,41 @@
       x = Math.max(cursorX, x);
       var y = baselineY - h;
 
-      ctx.fillStyle = s.isCurrent ? 'rgba(139,211,255,0.10)' : 'rgba(255,255,255,0.04)';
-      ctx.strokeStyle = s.isCurrent ? '#8bd3ff' : 'rgba(200,200,200,0.35)';
+      ctx.fillStyle = s.isCurrent ? CA('accent-fill') : CA('ghost');
+      ctx.strokeStyle = s.isCurrent ? CA('accent') : CA('side-border');
       ctx.lineWidth = s.isCurrent ? 2.5 : 1.5;
       ctx.fillRect(x, y, w, h);
       ctx.strokeRect(x, y, w, h);
 
-      ctx.fillStyle = s.isCurrent ? 'rgba(139,211,255,0.04)' : 'rgba(255,255,255,0.02)';
+      ctx.fillStyle = s.isCurrent ? CA('accent-ghost') : CA('ghost');
       ctx.fillRect(x + 3, y + 3, w - 6, h - 6);
 
       var standW = Math.max(8, w * 0.15);
-      ctx.fillStyle = s.isCurrent ? 'rgba(139,211,255,0.4)' : 'rgba(200,200,200,0.2)';
+      ctx.fillStyle = s.isCurrent ? CA('accent') : CA('side-border');
       ctx.fillRect(x + w / 2 - 1, baselineY - 10, 2, 12);
       ctx.fillRect(x + w / 2 - standW / 2, baselineY - 3, standW, 3);
 
-      ctx.fillStyle = s.isCurrent ? '#8bd3ff' : '#8899aa';
-      ctx.font = (s.isCurrent ? 'bold 16px ' : '14px ') + 'system-ui, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(s.size + '″', x + w / 2, y - 12);
+      ctx.fillStyle = s.isCurrent ? CA('accent') : CA('text-muted');
+            ctx.font = (s.isCurrent ? 'bold 16px ' : '14px ') + 'system-ui, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(s.size + '″', x + w / 2, y - 12);
 
-      ctx.fillStyle = s.isCurrent ? 'rgba(139,211,255,0.6)' : 'rgba(150,160,170,0.5)';
+      ctx.fillStyle = s.isCurrent ? CA('accent') : CA('text-muted');
       ctx.font = '10px system-ui, sans-serif';
       ctx.fillText(s.widthCm.toFixed(0) + '×' + s.heightCm.toFixed(0) + 'cm', x + w / 2, baselineY + 18);
 
       if (s.isCurrent) {
-        ctx.fillStyle = '#8bd3ff';
+        ctx.fillStyle = CA('accent');
         ctx.font = 'bold 9px system-ui, sans-serif';
-        ctx.fillText('当前', x + w / 2, baselineY + 32);
+        ctx.fillText(I18n.t('size.current'), x + w / 2, baselineY + 32);
       }
       cursorX += availW / screens.length;
     });
 
-    // Distance bar
-    var barY = cssH - 30;
+    // Distance bar — placed below all labels
+    var barY = baselineY + 42;
     var barEndX = padX + Math.min(distance * scale * 1.5, cssW - padX * 2);
-    ctx.strokeStyle = '#ff9a3c';
+    ctx.strokeStyle = CA('highlight');
     ctx.lineWidth = 2;
     ctx.setLineDash([6, 4]);
     ctx.beginPath();
@@ -206,23 +215,23 @@
     ctx.stroke();
     ctx.setLineDash([]);
     [padX, barEndX].forEach(function (px) {
-      ctx.fillStyle = '#ff9a3c';
+      ctx.fillStyle = CA('highlight');
       ctx.beginPath();
       ctx.moveTo(px, barY);
       ctx.lineTo(px + (px === padX ? 6 : -6), barY - 4);
       ctx.lineTo(px + (px === padX ? 6 : -6), barY + 4);
       ctx.fill();
     });
-    ctx.fillStyle = '#ff9a3c';
+    ctx.fillStyle = CA('highlight');
     ctx.font = 'bold 12px system-ui, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('观看距离 ' + distance + 'cm', (padX + barEndX) / 2, barY - 8);
+    ctx.fillText(I18n.t('size.watchDist') + ' ' + distance + 'cm', (padX + barEndX) / 2, barY - 8);
 
     var fov = Calc.computeHorizontalFOV(size, ar, distance);
-    ctx.fillStyle = 'rgba(100,200,100,0.7)';
+    ctx.fillStyle = CA('fov');
     ctx.font = '11px system-ui, sans-serif';
     ctx.textAlign = 'right';
-    ctx.fillText('水平视野角 ' + fov.toFixed(1) + '°', cssW - padX, 25);
+    ctx.fillText(I18n.t('size.fovLabel') + ' ' + fov.toFixed(1) + '°', cssW - padX, 25);
     ctx.textAlign = 'left';
   }
 
@@ -297,7 +306,7 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     // Background
-    ctx.fillStyle = '#060a14';
+    ctx.fillStyle = getCanvasBg();
     ctx.fillRect(0, 0, cssW, cssH);
 
     var size = state.size;
@@ -354,13 +363,13 @@
       var opacity = 0.04 + 0.06 * (1 - Math.abs(gz) / gridExtent);
       var p1 = P(-gridExtent, 0, gz);
       var p2 = P(gridExtent, 0, gz);
-      drawLine3D(ctx, p1, p2, 'rgba(255,255,255,' + opacity.toFixed(3) + ')', 1);
+      drawLine3D(ctx, p1, p2, CA('grid'), 1);
     }
     for (var gx = -gridExtent; gx <= gridExtent; gx += gridStep) {
       var opacity2 = 0.04 + 0.06 * (1 - Math.abs(gx) / gridExtent);
       var p3 = P(gx, 0, gridExtent);
       var p4 = P(gx, 0, -gridExtent);
-      drawLine3D(ctx, p3, p4, 'rgba(255,255,255,' + opacity2.toFixed(3) + ')', 1);
+      drawLine3D(ctx, p3, p4, CA('grid'), 1);
     }
 
     // === Draw desk ===
@@ -373,14 +382,14 @@
     var dTR = P(deskHalfW, deskTopY, deskBackZ);
     var dBR = P(deskHalfW, deskTopY, deskFrontZ);
     var dBL = P(-deskHalfW, deskTopY, deskFrontZ);
-    drawFace(ctx, [dTL, dTR, dBR, dBL], 'rgba(180,140,80,0.12)', 'rgba(200,160,100,0.4)', 1.5);
+    drawFace(ctx, [dTL, dTR, dBR, dBL], CA('desk-fill'), CA('desk-stroke'), 1.5);
 
     // Desk front face
     var dFTL = P(-deskHalfW, deskTopY, deskFrontZ);
     var dFTR = P(deskHalfW, deskTopY, deskFrontZ);
     var dFBR = P(deskHalfW, deskBottomY, deskFrontZ);
     var dFBL = P(-deskHalfW, deskBottomY, deskFrontZ);
-    drawFace(ctx, [dFTL, dFTR, dFBR, dFBL], 'rgba(180,140,80,0.06)', 'rgba(200,160,100,0.2)', 1);
+    drawFace(ctx, [dFTL, dFTR, dFBR, dFBL], CA('desk-fill'), CA('desk-stroke'), 1);
 
     // === Draw monitor ===
     var scrHalfW = scrW / 2;
@@ -391,8 +400,8 @@
 
     // Screen back (facing viewer) — the actual display
     var isTV = size >= 42;
-    var screenFill = isTV ? 'rgba(255,211,122,0.08)' : 'rgba(139,211,255,0.08)';
-    var screenStroke = isTV ? 'rgba(255,211,122,0.8)' : '#8bd3ff';
+    var screenFill = isTV ? 'rgba(255,211,122,0.08)' : CA('accent-ghost');
+    var screenStroke = isTV ? 'rgba(255,211,122,0.8)' : CA('accent');
     drawFace(ctx, [sTL, sTR, sBR, sBL], screenFill, screenStroke, 2);
 
     // Screen bezel effect — inner rectangle
@@ -401,7 +410,7 @@
     var ibTR = P(scrHalfW - bezel, scrTopY - bezel, scrZ);
     var ibBR = P(scrHalfW - bezel, scrBottomY + bezel, scrZ);
     var ibBL = P(-scrHalfW + bezel, scrBottomY + bezel, scrZ);
-    drawFace(ctx, [ibTL, ibTR, ibBR, ibBL], isTV ? 'rgba(255,211,122,0.03)' : 'rgba(139,211,255,0.03)', null, 0);
+    drawFace(ctx, [ibTL, ibTR, ibBR, ibBL], isTV ? 'rgba(255,211,122,0.03)' : CA('accent-ghost'), null, 0);
 
     // Screen side (thickness)
     var scrThickness = 3 * s;
@@ -409,7 +418,7 @@
     var ssTR = P(scrHalfW, scrTopY, scrZ - scrThickness);
     var ssBR = P(scrHalfW, scrBottomY, scrZ - scrThickness);
     var ssBL = P(scrHalfW, scrBottomY, scrZ);
-    drawFace(ctx, [ssTL, ssTR, ssBR, ssBL], 'rgba(100,100,110,0.15)', 'rgba(150,150,160,0.3)', 1);
+    drawFace(ctx, [ssTL, ssTR, ssBR, ssBL], CA('side'), CA('side-border'), 1);
 
     // Stand
     var standBaseY = deskTopY;
@@ -419,7 +428,7 @@
     var stBR = P(standW / 2, standBaseY, scrZ);
     var stTR = P(standW / 2, standTopY, scrZ);
     var stTL = P(-standW / 2, standTopY, scrZ);
-    drawFace(ctx, [stBL, stBR, stTR, stTL], 'rgba(139,211,255,0.2)', 'rgba(139,211,255,0.4)', 1);
+    drawFace(ctx, [stBL, stBR, stTR, stTL], CA('stand'), CA('stand-border'), 1);
     // Stand base plate
     var baseW = Math.max(15 * s, scrW * 0.2);
     var baseL = 8 * s;
@@ -427,15 +436,15 @@
     var bsFR = P(baseW / 2, deskTopY, scrZ - baseL / 2);
     var bsBR = P(baseW / 2, deskTopY, scrZ + baseL / 2);
     var bsBL = P(-baseW / 2, deskTopY, scrZ + baseL / 2);
-    drawFace(ctx, [bsFL, bsFR, bsBR, bsBL], 'rgba(139,211,255,0.15)', 'rgba(139,211,255,0.3)', 1);
+    drawFace(ctx, [bsFL, bsFR, bsBR, bsBL], CA('stand'), CA('stand-border'), 1);
 
     // === Draw person (simplified silhouette) ===
     // Head
     var headR = 12 * s;
     var headY = eyeY + 5 * s;
     var headP = P(eyeX, headY, eyeZ);
-    ctx.fillStyle = 'rgba(241,201,165,0.6)';
-    ctx.strokeStyle = 'rgba(241,201,165,0.8)';
+    ctx.fillStyle = CA('person');
+    ctx.strokeStyle = CA('person-stroke');
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.arc(headP.x, headP.y, headR * (focal / (headP.depth || 1)), 0, Math.PI * 2);
@@ -449,7 +458,7 @@
     var shR = P(eyeX + shoulderW / 2, shoulderY, eyeZ);
     var shBL = P(eyeX - shoulderW / 2, deskTopY, eyeZ + 10 * s);
     var shBR = P(eyeX + shoulderW / 2, deskTopY, eyeZ + 10 * s);
-    drawFace(ctx, [shL, shR, shBR, shBL], 'rgba(179,156,255,0.15)', 'rgba(179,156,255,0.4)', 1.5);
+    drawFace(ctx, [shL, shR, shBR, shBL], CA('clothes'), CA('clothes-stroke'), 1.5);
 
     // === Draw FOV cone (from eye to screen edges) ===
     var eyeP = P(eyeX, eyeY, eyeZ);
@@ -458,8 +467,8 @@
     var fovBR = P(scrHalfW, scrBottomY, scrZ);
     var fovBL = P(-scrHalfW, scrBottomY, scrZ);
 
-    ctx.fillStyle = 'rgba(100,200,100,0.06)';
-    ctx.strokeStyle = 'rgba(100,200,100,0.25)';
+    ctx.fillStyle = CA('ghost');
+    ctx.strokeStyle = CA('fov');
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(eyeP.x, eyeP.y);
@@ -479,17 +488,17 @@
 
     // === Draw viewing distance line (eye to screen center) ===
     var scrCenterP = P(0, (scrTopY + scrBottomY) / 2, scrZ);
-    drawLine3D(ctx, eyeP, scrCenterP, '#ff9a3c', 2, [6, 4]);
+    drawLine3D(ctx, eyeP, scrCenterP, CA('highlight'), 2, [6, 4]);
 
     // Distance label
     var midP = P(0, (eyeY + (scrTopY + scrBottomY) / 2) / 2, (eyeZ + scrZ) / 2);
-    ctx.fillStyle = '#ff9a3c';
+    ctx.fillStyle = CA('highlight');
     ctx.font = 'bold 12px system-ui, sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText(distance + 'cm', midP.x, midP.y - 6);
 
     // Eye marker
-    ctx.fillStyle = '#ff9a3c';
+    ctx.fillStyle = CA('highlight');
     ctx.beginPath();
     ctx.arc(eyeP.x, eyeP.y, 4, 0, Math.PI * 2);
     ctx.fill();
@@ -652,6 +661,9 @@
       window.removeEventListener('resize', onResize);
       if (resizeTimer) clearTimeout(resizeTimer);
     });
+
+    // Re-render on language change
+    cleanups.push(I18n.onChange(function () { render(); }));
   }
 
   function destroy() {

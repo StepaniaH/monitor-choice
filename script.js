@@ -208,7 +208,7 @@
     if (moreToggle && moreParams) {
       moreToggle.addEventListener('click', function () {
         var isExpanded = moreParams.classList.toggle('expanded');
-        moreToggle.textContent = isExpanded ? '收起参数' : '更多参数';
+        moreToggle.textContent = isExpanded ? I18n.t('input.lessParams') : I18n.t('input.moreParams');
       });
     }
 
@@ -218,7 +218,7 @@
       saveBtn.addEventListener('click', function () {
         AppState.savePreferences();
         var original = saveBtn.textContent;
-        saveBtn.textContent = '已记住 ✓';
+        saveBtn.textContent = I18n.t('input.saved');
         saveBtn.disabled = true;
         setTimeout(function () {
           saveBtn.textContent = original;
@@ -233,12 +233,38 @@
       clearBtn.addEventListener('click', function () {
         AppState.clearPreferences();
         var original = clearBtn.textContent;
-        clearBtn.textContent = '已清除 ✓';
+        clearBtn.textContent = I18n.t('input.cleared');
         clearBtn.disabled = true;
         setTimeout(function () {
           clearBtn.textContent = original;
           clearBtn.disabled = false;
         }, 1500);
+      });
+    }
+
+    // Lang toggle
+    var langBtn = document.getElementById('langToggle');
+    if (langBtn) {
+      function updateLangBtn() {
+        langBtn.textContent = I18n.getLocale() === 'zh' ? 'EN' : '中文';
+        langBtn.title = I18n.t('lang.switchTo');
+      }
+      updateLangBtn();
+      langBtn.addEventListener('click', function () {
+        I18n.setLocale(I18n.getLocale() === 'zh' ? 'en' : 'zh');
+        updateLangBtn();
+        // Update save/clear button text since they might be mid-animation
+        var saveBtn = document.getElementById('saveBtn');
+        if (saveBtn && !saveBtn.disabled) saveBtn.textContent = I18n.t('input.save');
+        var clrBtn = document.getElementById('clearBtn');
+        if (clrBtn && !clrBtn.disabled) clrBtn.textContent = I18n.t('input.clear');
+        // Update more params toggle
+        var moreToggle = document.getElementById('moreParamsToggle');
+        var moreParams = document.getElementById('moreParams');
+        if (moreToggle && moreParams) {
+          moreToggle.textContent = moreParams.classList.contains('expanded')
+            ? I18n.t('input.lessParams') : I18n.t('input.moreParams');
+        }
       });
     }
   }

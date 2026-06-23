@@ -26,11 +26,11 @@
 
   function ppdLabel(ppd) {
     var t = Calc.PPD_THRESHOLDS;
-    if (ppd < t.POOR) return '差';
-    if (ppd < t.FAIR) return '一般';
-    if (ppd < t.GOOD) return '良好';
-    if (ppd < t.EXCELLENT) return '优秀';
-    return '视网膜级';
+    if (ppd < t.POOR) return I18n.t('sharp.scale.poor');
+    if (ppd < t.FAIR) return I18n.t('sharp.scale.fair');
+    if (ppd < t.GOOD) return I18n.t('sharp.scale.good');
+    if (ppd < t.EXCELLENT) return I18n.t('sharp.scale.excellent');
+    return I18n.t('sharp.scale.retina');
   }
 
   function ppdColor(ppd) {
@@ -38,7 +38,7 @@
     if (ppd < t.POOR) return '#ff9aa2';
     if (ppd < t.FAIR) return '#ffd37a';
     if (ppd < t.GOOD) return '#8ff0b2';
-    if (ppd < t.EXCELLENT) return '#8bd3ff';
+    if (ppd < t.EXCELLENT) return CA('accent') || '#8bd3ff';
     return '#b39cff';
   }
 
@@ -61,7 +61,6 @@
         }
       }
     }
-    // Fallback: most different
     var best = null, bestDiff = 0;
     all.forEach(function (r) {
       if (r.w === w && r.h === h) return;
@@ -77,6 +76,15 @@
       if (Math.abs(candidates[i] - currentSize) >= 6) return candidates[i];
     }
     return currentSize === 32 ? 27 : 32;
+  }
+
+  /** Shortcut: read a canvas CSS variable. */
+  function CA(name) {
+    return window.ThemeManager ? ThemeManager.getCanvasColor(name) : '';
+  }
+  /** Return current theme's canvas background color. */
+  function getCanvasBg() {
+    return window.ThemeManager ? ThemeManager.getCanvasBg() : '#232634';
   }
 
   /* ------------------------------------------------------------------ */
@@ -104,7 +112,6 @@
       current: true
     }];
 
-    // Config 2: alternative resolution at same size
     var altRes = findAltResolution(w, h);
     if (altRes) {
       var altPpi = Calc.computePPI(altRes.w, altRes.h, size);
@@ -120,7 +127,6 @@
       });
     }
 
-    // Config 3: alternative size at same resolution
     var altSize = findAltSize(size);
     var sizePpi = Calc.computePPI(w, h, altSize);
     configs.push({
@@ -160,7 +166,7 @@
       { from: 0, to: t.POOR, color: '#ff9aa2' },
       { from: t.POOR, to: t.FAIR, color: '#ffd37a' },
       { from: t.FAIR, to: t.GOOD, color: '#8ff0b2' },
-      { from: t.GOOD, to: t.EXCELLENT, color: '#8bd3ff' },
+      { from: t.GOOD, to: t.EXCELLENT, color: CA('accent') || '#8bd3ff' },
       { from: t.EXCELLENT, to: maxPPD, color: '#b39cff' }
     ];
 
@@ -173,11 +179,9 @@
 
     // Marker
     var markerX = Math.min(cssW - 2, Math.max(2, (ppd / maxPPD) * cssW));
-
-    // Marker glow (for visibility on colored bg)
-    ctx.shadowColor = '#fff';
+    ctx.shadowColor = 'transparent';
     ctx.shadowBlur = 6;
-    ctx.strokeStyle = '#fff';
+    ctx.strokeStyle = CA('text');
     ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.moveTo(markerX, -2);
@@ -185,9 +189,9 @@
     ctx.stroke();
     ctx.shadowBlur = 0;
 
-    // Retina threshold line (PPD=60)
+    // Retina threshold line
     var retinaX = (Calc.PPD_THRESHOLDS.RETINA / maxPPD) * cssW;
-    ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+    ctx.strokeStyle = CA('grid');
     ctx.lineWidth = 1.5;
     ctx.setLineDash([3, 3]);
     ctx.beginPath();
@@ -205,21 +209,24 @@
     var el = document.getElementById('sharp-retina-callout');
     if (!el) return;
 
-    var status, statusClass;
+    var statusKey, statusClass;
     if (ppd < Calc.PPD_THRESHOLDS.POOR) {
-      status = '文字明显发虚，建议提高分辨率或拉远距离';
+      statusKey = 'sharp.status.poor';
       statusClass = 'poor';
     } else if (distance < retina) {
-      status = '低于视网膜距离，可能看到像素颗粒';
+      statusKey = 'sharp.status.below';
       statusClass = 'below';
     } else {
-      status = '已达到视网膜级别，文字清晰锐利';
+      statusKey = 'sharp.status.good';
       statusClass = '';
     }
 
-    el.innerHTML =
-      '当前观看距离 <b>' + distance + 'cm</b>，视网膜距离 <b>' +
-      Math.round(retina) + 'cm</b>。<span class="retina-status ' + statusClass + '">' + status + '。</span>';
+    el.innerHTML = I18n.t('sharp.retinaCallout', {
+      distance: distance,
+      retina: Math.round(retina),
+      statusClass: statusClass,
+      status: I18n.t(statusKey)
+    });
   }
 
   /* ------------------------------------------------------------------ */
@@ -236,24 +243,22 @@
     var ctx = canvas.getContext('2d');
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    // Background
-    ctx.fillStyle = config.current ? '#0e1525' : '#0a0f1c';
+    ctx.fillStyle = getCanvasBg();
     ctx.fillRect(0, 0, cssW, cssH);
 
     if (config.current) {
-      ctx.strokeStyle = 'rgba(139,211,255,0.4)';
+      ctx.strokeStyle = CA('accent-border');
       ctx.lineWidth = 1.5;
       ctx.strokeRect(0.75, 0.75, cssW - 1.5, cssH - 1.5);
     }
 
-    // Header
     var headerH = 42;
     if (card) {
       var titleEl = card.querySelector('.card-title');
       var subEl = card.querySelector('.card-subtitle');
       if (titleEl) {
         titleEl.textContent = config.label;
-        if (config.current) titleEl.style.color = '#8bd3ff';
+        if (config.current) titleEl.style.color = CA('accent');
         else titleEl.style.color = '';
       }
       if (subEl) {
@@ -262,12 +267,10 @@
       }
     }
 
-    // Text comparison area
     var textAreaY = headerH;
     var textAreaH = cssH - headerH - 6;
     var textAreaW = cssW - 4;
 
-    // Virtual canvas proportional to PPD — lower PPD = more pixelation
     var refPPD = 90;
     var scale = Math.max(0.12, Math.min(1, config.ppd / refPPD));
     var vW = Math.max(2, Math.round(textAreaW * scale));
@@ -278,23 +281,21 @@
     off.height = vH;
     var octx = off.getContext('2d');
 
-    octx.fillStyle = '#070b16';
+    octx.fillStyle = getCanvasBg();
     octx.fillRect(0, 0, vW, vH);
 
-    // Render text on virtual canvas
     var fs = Math.max(6, Math.round(vH * 0.14));
-    octx.fillStyle = '#e8e8e8';
+    octx.fillStyle = CA('text');
     octx.font = 'bold ' + fs + 'px sans-serif';
     octx.textBaseline = 'top';
-    octx.fillText('敏捷的棕色狐狸', 2, vH * 0.06);
-    octx.fillText('跳过了那只懒狗', 2, vH * 0.28);
+    octx.fillText(I18n.t('sharp.pixelText1'), 2, vH * 0.06);
+    octx.fillText(I18n.t('sharp.pixelText2'), 2, vH * 0.28);
 
     octx.font = (fs * 0.7) + 'px sans-serif';
-    octx.fillStyle = '#aaa';
+    octx.fillStyle = CA('text-muted');
     octx.fillText('The quick brown fox', 2, vH * 0.54);
     octx.fillText('jumps over the lazy dog', 2, vH * 0.72);
 
-    // Scale up with no smoothing to show pixelation
     ctx.imageSmoothingEnabled = false;
     ctx.drawImage(off, 2, textAreaY, textAreaW, textAreaH);
     ctx.imageSmoothingEnabled = true;
@@ -317,20 +318,15 @@
     var ppd = Calc.computePPD(ppi, distance);
     var retina = Calc.computeRetinaDistance(ppi);
 
-    // Stats
     var el;
     el = document.getElementById('sharp-ppi');    if (el) el.textContent = Math.round(ppi);
     el = document.getElementById('sharp-ppd');
     if (el) { el.textContent = ppd.toFixed(1); el.style.color = ppdColor(ppd); }
     el = document.getElementById('sharp-retina'); if (el) el.textContent = Math.round(retina) + ' cm';
 
-    // PPD meter
     renderPPDMeter(ppd);
-
-    // Retina callout
     renderRetinaCallout(distance, retina, ppd);
 
-    // Comparison canvases
     var configs = getConfigs({ distance: distance, size: size, resolution: resolution });
     for (var i = 0; i < 3; i++) {
       var canvas = document.getElementById('sharp-canvas-' + i);
@@ -363,6 +359,13 @@
       window.removeEventListener('resize', onResize);
       if (resizeTimer) clearTimeout(resizeTimer);
     });
+
+    // Re-render on theme change
+    if (window.ThemeManager) {
+      cleanups.push(ThemeManager.onChange(function () { render(); }));
+    }
+    // Re-render on language change
+    cleanups.push(I18n.onChange(function () { render(); }));
   }
 
   function destroy() {

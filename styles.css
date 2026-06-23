@@ -3,68 +3,12 @@
    Dark glassmorphism theme · vanilla CSS · zero external resources
    ===================================================================== */
 
-@import url('./css/sharpness.css');
-@import url('./css/size-view.css');
-@import url('./css/color-lab.css');
-@import url('./css/scenarios.css');
-@import url('./css/panel-guide.css');
-
-/* ---------------------------------------------------------------------
-   Design tokens
-   --------------------------------------------------------------------- */
-:root {
-  color-scheme: dark;
-
-  /* Backgrounds */
-  --bg-base: #0b1020;
-  --bg-card: rgba(255, 255, 255, 0.08);
-  --bg-card-strong: rgba(255, 255, 255, 0.13);
-
-  /* Text */
-  --text-primary: #f5f7fb;
-  --text-muted: #aab3c5;
-
-  /* Borders & accents */
-  --border: rgba(255, 255, 255, 0.14);
-  --accent-blue: #8bd3ff;
-  --accent-purple: #b39cff;
-
-  /* Semantic */
-  --good-green: #8ff0b2;
-  --warn-yellow: #ffd37a;
-  --bad-red: #ff9aa2;
-
-  /* Typography */
-  --font: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-          "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", sans-serif;
-  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Fira Code",
-               "JetBrains Mono", Consolas, monospace;
-
-  /* Spacing scale */
-  --space-xs: 4px;
-  --space-sm: 8px;
-  --space-md: 16px;
-  --space-lg: 24px;
-  --space-xl: 40px;
-  --space-2xl: 64px;
-
-  /* Radius scale */
-  --radius-sm: 8px;
-  --radius-md: 16px;
-  --radius-lg: 28px;
-  --radius-pill: 999px;
-
-  /* Reusable shadow */
-  --shadow-card: 0 20px 80px rgba(0, 0, 0, 0.25);
-  --shadow-sticky: 0 12px 40px rgba(0, 0, 0, 0.35);
-
-  /* Gradient used by active pills / accents */
-  --gradient-accent: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-
-  /* Glass surface */
-  --glass-bg: linear-gradient(145deg, var(--bg-card), rgba(255, 255, 255, 0.04));
-  --glass-bg-strong: linear-gradient(145deg, var(--bg-card-strong), rgba(255, 255, 255, 0.06));
-}
+@import url('./css/theme.css?v=10');
+@import url('./css/sharpness.css?v=10');
+@import url('./css/size-view.css?v=10');
+@import url('./css/color-lab.css?v=10');
+@import url('./css/scenarios.css?v=10');
+@import url('./css/panel-guide.css?v=10');
 
 /* ---------------------------------------------------------------------
    Reset & base
@@ -83,11 +27,6 @@ body {
   margin: 0;
   min-height: 100vh;
   font-family: var(--font);
-  background:
-    radial-gradient(circle at 20% 0%, rgba(139, 211, 255, 0.24), transparent 30%),
-    radial-gradient(circle at 80% 10%, rgba(179, 156, 255, 0.22), transparent 34%),
-    var(--bg-base);
-  background-attachment: fixed;
   color: var(--text-primary);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
@@ -146,7 +85,7 @@ button {
   display: grid;
   place-items: center;
   font-size: 28px;
-  box-shadow: 0 10px 30px rgba(139, 211, 255, 0.3);
+  box-shadow: 0 10px 30px var(--logo-shadow);
 }
 
 .app-header .header-text {
@@ -250,7 +189,7 @@ button {
   font-size: 14px;
   font-weight: 500;
   color: var(--text-primary);
-  background-color: rgba(11, 16, 32, 0.9);
+  background-color: var(--bg-input);
   border: 1px solid var(--border);
   border-radius: var(--radius-pill);
   cursor: pointer;
@@ -266,17 +205,17 @@ button {
 
 .input-panel select:hover {
   border-color: var(--accent-blue);
-  background-color: rgba(139, 211, 255, 0.06);
+  background-color: var(--bg-accent-hover);
 }
 
 .input-panel select:focus {
   outline: none;
   border-color: var(--accent-blue);
-  box-shadow: 0 0 0 3px rgba(139, 211, 255, 0.15);
+  box-shadow: 0 0 0 3px var(--ring-focus);
 }
 
 .input-panel select option {
-  background-color: #0b1020;
+  background-color: var(--bg-input);
   color: var(--text-primary);
   padding: var(--space-sm);
 }
@@ -315,7 +254,7 @@ button {
 .input-panel .more-params-toggle:hover {
   color: var(--text-primary);
   border-color: var(--accent-blue);
-  background: rgba(139, 211, 255, 0.08);
+  background: var(--bg-accent-hover);
 }
 
 /* Settings buttons row */
@@ -334,7 +273,7 @@ button {
   font-size: 13px;
   font-weight: 600;
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--bg-hover);
   border: 1px solid var(--border);
   border-radius: var(--radius-pill);
   cursor: pointer;
@@ -342,7 +281,7 @@ button {
 }
 
 .input-panel .settings-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--bg-hover-strong);
   border-color: var(--accent-blue);
 }
 
@@ -352,11 +291,11 @@ button {
 
 .input-panel .settings-btn.danger {
   color: var(--bad-red);
-  border-color: rgba(255, 154, 162, 0.3);
+  border-color: rgba(210, 15, 57, 0.3);
 }
 
 .input-panel .settings-btn.danger:hover {
-  background: rgba(255, 154, 162, 0.1);
+  background: rgba(210, 15, 57, 0.12);
   border-color: var(--bad-red);
 }
 
@@ -395,18 +334,18 @@ button {
 
 .tab-nav-btn:hover {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--bg-hover);
 }
 
 .tab-nav-btn.active {
-  color: #07111f;
+  color: var(--accent-text);
   background: var(--gradient-accent);
   border-color: transparent;
-  box-shadow: 0 6px 20px rgba(139, 211, 255, 0.25);
+  box-shadow: 0 6px 20px var(--accent-shadow);
 }
 
 .tab-nav-btn.active:hover {
-  color: #07111f;
+  color: var(--accent-text);
   background: var(--gradient-accent);
 }
 
@@ -452,7 +391,7 @@ button {
   margin-bottom: var(--space-md);
   padding: var(--space-md);
   border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--bg-ghost);
   border: 1px solid var(--border);
   font-style: italic;
   color: var(--text-muted);
@@ -505,7 +444,7 @@ button {
   min-width: 200px;
   max-width: 320px;
   padding: 10px 14px;
-  background: #0e1526;
+  background: var(--bg-tooltip);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
@@ -533,7 +472,7 @@ button {
   left: 50%;
   transform: translateX(-50%);
   border: 5px solid transparent;
-  border-top-color: #0e1526;
+  border-top-color: var(--bg-tooltip);
   opacity: 0;
   transition: opacity 0.2s ease;
   z-index: 100;
@@ -541,6 +480,54 @@ button {
 
 [data-tooltip]:hover::after {
   opacity: 1;
+}
+
+/* ---------------------------------------------------------------------
+   Header actions (theme + lang toggles)
+   --------------------------------------------------------------------- */
+.header-actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-left: auto;
+}
+
+.theme-toggle,
+.lang-toggle {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--glass-bg);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+  flex-shrink: 0;
+}
+
+.theme-toggle {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.lang-toggle {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.theme-toggle:hover,
+.lang-toggle:hover {
+  border-color: var(--accent-blue);
+  background: var(--bg-accent-hover);
+}
+
+.theme-toggle:active,
+.lang-toggle:active {
+  transform: scale(0.93);
 }
 
 /* ---------------------------------------------------------------------
