@@ -148,7 +148,7 @@
       return { size: s, widthCm: dims.widthCm, heightCm: dims.heightCm, isCurrent: s === size };
     });
 
-    var padX = 30, padTop = 30, padBottom = 50;
+    var padX = 30, padTop = 12, padBottom = 72;
     var maxW = Math.max.apply(null, screens.map(function (s) { return s.widthCm; }));
     var availW = cssW - padX * 2 - (screens.length - 1) * 20;
     var availH = cssH - padTop - padBottom;
@@ -203,8 +203,8 @@
       cursorX += availW / screens.length;
     });
 
-    // Distance bar
-    var barY = cssH - 30;
+    // Distance bar — placed below all labels
+    var barY = baselineY + 42;
     var barEndX = padX + Math.min(distance * scale * 1.5, cssW - padX * 2);
     ctx.strokeStyle = CA('highlight');
     ctx.lineWidth = 2;

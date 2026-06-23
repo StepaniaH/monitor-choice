@@ -56,7 +56,9 @@
       gamut: 'sRGB 100% / DCI-P3 ~90%',
       deltaE: '<2',
       pros: ['色彩准确', '可视角度大', '适合专业工作'],
+      prosEn: ['Accurate color', 'Wide viewing angles', 'Great for pro work'],
       cons: ['原生对比度低', '存在 IPS Glow'],
+      consEn: ['Low native contrast', 'IPS Glow effect'],
       suitable: ['设计', '修图', '日常办公'],
       unsuitable: ['暗房环境使用']
     },
@@ -67,7 +69,9 @@
       gamut: 'sRGB 110% / DCI-P3 ~85%',
       deltaE: '<3',
       pros: ['对比度高', '黑色表现深沉'],
+      prosEn: ['High contrast', 'Deep blacks'],
       cons: ['响应速度较慢', '曲面型号较多'],
+      consEn: ['Slower response', 'Many curved models'],
       suitable: ['影音娱乐', '游戏'],
       unsuitable: ['专业修图']
     },
@@ -78,7 +82,9 @@
       gamut: 'sRGB 100%',
       deltaE: '<5',
       pros: ['响应速度极快', '价格低廉'],
+      prosEn: ['Ultra-fast response', 'Low cost'],
       cons: ['可视角度小', '色彩表现差'],
+      consEn: ['Narrow viewing angles', 'Poor color'],
       suitable: ['竞技游戏'],
       unsuitable: ['设计', '影音娱乐']
     },
@@ -89,7 +95,9 @@
       gamut: 'DCI-P3 99% / BT.2020 ~75%',
       deltaE: '<1',
       pros: ['完美黑色', '响应极快', '色彩极佳'],
+      prosEn: ['Perfect blacks', 'Ultra-fast response', 'Excellent color'],
       cons: ['烧屏风险', '峰值亮度有限', '价格高昂'],
+      consEn: ['Burn-in risk', 'Limited peak brightness', 'Expensive'],
       suitable: ['HDR', '影视', '游戏'],
       unsuitable: ['长时间静态画面']
     },
@@ -100,7 +108,9 @@
       gamut: 'DCI-P3 95%+ / BT.2020 ~80%',
       deltaE: '<2',
       pros: ['高亮度', '高分区控光', '无烧屏风险'],
+      prosEn: ['High brightness', 'Many dimming zones', 'No burn-in risk'],
       cons: ['存在光晕现象', '价格较高'],
+      consEn: ['Blooming/halo effect', 'Higher cost'],
       suitable: ['HDR', '影音', '游戏'],
       unsuitable: ['极暗环境下的精细对比']
     }

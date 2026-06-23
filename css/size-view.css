@@ -126,7 +126,7 @@
   overflow: hidden;
   background: var(--bg-canvas);
   border: 1px solid var(--bg-hover);
-  min-height: 340px;
+  height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -135,8 +135,7 @@
 .size-canvas-container canvas {
   display: block;
   width: 100%;
-  height: auto;
-  min-height: 340px;
+  height: 200px;
 }
 
 /* ---------------------------------------------------------------------

@@ -242,6 +242,9 @@
     html += '</tr></thead><tbody>';
 
     Constants.PANEL_TYPES.forEach(function (p) {
+      var isEn = I18n.getLocale() === 'en';
+      var prosArr = (isEn && p.prosEn) ? p.prosEn : (p.pros || []);
+      var consArr = (isEn && p.consEn) ? p.consEn : (p.cons || []);
       html += '<tr>';
       html += '<td>' + p.name + '</td>';
       html += '<td>' + p.contrastRatio + '</td>';
@@ -252,8 +255,8 @@
       if (deltaENum >= 3) badgeCls = 'warn';
       if (deltaENum >= 5) badgeCls = 'bad';
       html += '<td><span class="badge ' + badgeCls + '">' + p.deltaE + '</span></td>';
-      html += '<td>' + (p.pros || []).join('；') + '</td>';
-      html += '<td>' + (p.cons || []).join('；') + '</td>';
+      html += '<td>' + prosArr.join('；') + '</td>';
+      html += '<td>' + consArr.join('；') + '</td>';
       html += '</tr>';
     });
 
