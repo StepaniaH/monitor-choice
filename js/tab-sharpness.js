@@ -79,6 +79,11 @@
     return currentSize === 32 ? 27 : 32;
   }
 
+  /** Return current theme's canvas background color. */
+  function getCanvasBg() {
+    return window.ThemeManager ? ThemeManager.getCanvasBg() : '#232634';
+  }
+
   /* ------------------------------------------------------------------ */
   /* Config generation                                                  */
   /* ------------------------------------------------------------------ */
@@ -237,7 +242,7 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     // Background
-    ctx.fillStyle = config.current ? '#0e1525' : '#0a0f1c';
+    ctx.fillStyle = config.current ? getCanvasBgLight() : getCanvasBg();
     ctx.fillRect(0, 0, cssW, cssH);
 
     if (config.current) {
@@ -278,7 +283,7 @@
     off.height = vH;
     var octx = off.getContext('2d');
 
-    octx.fillStyle = '#070b16';
+    octx.fillStyle = getCanvasBg();
     octx.fillRect(0, 0, vW, vH);
 
     // Render text on virtual canvas

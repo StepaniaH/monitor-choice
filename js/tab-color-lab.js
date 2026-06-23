@@ -12,6 +12,11 @@
   var resizeTimer = null;
   var selectedGamut = 'srgb';
 
+  /** Return current theme's canvas background color. */
+  function getCanvasBg() {
+    return window.ThemeManager ? ThemeManager.getCanvasBg() : '#232634';
+  }
+
   /* ------------------------------------------------------------------ */
   /* Gamut definitions                                                  */
   /* ------------------------------------------------------------------ */
@@ -49,7 +54,7 @@
     var ctx = canvas.getContext('2d');
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    ctx.fillStyle = '#070b16';
+    ctx.fillStyle = getCanvasBg();
     ctx.fillRect(0, 0, cssW, cssH);
 
     var padL = 45, padR = 20, padT = 20, padB = 40;

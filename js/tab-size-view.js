@@ -53,6 +53,11 @@
     }
   }
 
+  /** Return current theme's canvas background color. */
+  function getCanvasBg() {
+    return window.ThemeManager ? ThemeManager.getCanvasBg() : '#232634';
+  }
+
   /* ------------------------------------------------------------------ */
   /* Stats                                                              */
   /* ------------------------------------------------------------------ */
@@ -123,7 +128,7 @@
     var ctx = canvas.getContext('2d');
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    ctx.fillStyle = '#070b16';
+    ctx.fillStyle = getCanvasBg();
     ctx.fillRect(0, 0, cssW, cssH);
 
     var size = state.size;
@@ -297,7 +302,7 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     // Background
-    ctx.fillStyle = '#060a14';
+    ctx.fillStyle = getCanvasBg();
     ctx.fillRect(0, 0, cssW, cssH);
 
     var size = state.size;

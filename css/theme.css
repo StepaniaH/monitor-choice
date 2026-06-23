@@ -1,0 +1,101 @@
+/* =====================================================================
+   monitor-choice — Catppuccin Theme System
+   Latte (light) + Frappé (dark) · zero external resources
+   ===================================================================== */
+
+/* ---------------------------------------------------------------------
+   Shared fallback (defaults to Frappé dark, overridden by [data-theme])
+   --------------------------------------------------------------------- */
+:root {
+  /* ── Frappé (dark) — default ── */
+  --bg-base: #303446;
+  --bg-card: rgba(65, 69, 89, 0.55);
+  --bg-card-strong: rgba(81, 87, 109, 0.78);
+  --bg-canvas: #232634;
+  --bg-tooltip: #292c3c;
+  --bg-input: rgba(35, 38, 52, 0.92);
+
+  --text-primary: #c6d0f5;
+  --text-muted: #a5adce;
+
+  --border: rgba(198, 208, 245, 0.14);
+
+  --accent-blue: #8caaee;
+  --accent-purple: #babbf1;
+  --good-green: #a6d189;
+  --warn-yellow: #e5c890;
+  --bad-red: #e78284;
+
+  --accent-text: #232634;
+  --accent-shadow: 0 0 20px rgba(140, 170, 238, 0.25);
+
+  /* Shared — unaffected by theme */
+  --font: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Fira Code",
+               "JetBrains Mono", Consolas, monospace;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+  --space-2xl: 64px;
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 28px;
+  --radius-pill: 999px;
+
+  --shadow-card: 0 20px 80px rgba(0, 0, 0, 0.25);
+  --shadow-sticky: 0 12px 40px rgba(0, 0, 0, 0.35);
+  --gradient-accent: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  --glass-bg: linear-gradient(145deg, var(--bg-card), rgba(255, 255, 255, 0.04));
+  --glass-bg-strong: linear-gradient(145deg, var(--bg-card-strong), rgba(255, 255, 255, 0.06));
+}
+
+/* ---------------------------------------------------------------------
+   Latte (light theme)
+   --------------------------------------------------------------------- */
+[data-theme="latte"] {
+  --bg-base: #eff1f5;
+  --bg-card: rgba(204, 208, 218, 0.55);
+  --bg-card-strong: rgba(188, 192, 204, 0.75);
+  --bg-canvas: #e6e9ef;
+  --bg-tooltip: #dce0e8;
+  --bg-input: rgba(230, 233, 239, 0.92);
+
+  --text-primary: #4c4f69;
+  --text-muted: #6c6f85;
+
+  --border: rgba(76, 79, 105, 0.16);
+
+  --accent-blue: #1e66f5;
+  --accent-purple: #7287fd;
+  --good-green: #40a02b;
+  --warn-yellow: #df8e1d;
+  --bad-red: #d20f39;
+
+  --accent-text: #eff1f5;
+  --accent-shadow: 0 6px 20px rgba(30, 102, 245, 0.2);
+
+  --shadow-card: 0 12px 60px rgba(0, 0, 0, 0.08);
+  --shadow-sticky: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* ---------------------------------------------------------------------
+   Body backgrounds (per theme)
+   --------------------------------------------------------------------- */
+body {
+  background:
+    radial-gradient(circle at 20% 0%, rgba(140, 170, 238, 0.24), transparent 30%),
+    radial-gradient(circle at 80% 10%, rgba(186, 187, 241, 0.22), transparent 34%),
+    var(--bg-base);
+  background-attachment: fixed;
+}
+
+[data-theme="latte"] body {
+  background:
+    radial-gradient(circle at 20% 0%, rgba(30, 102, 245, 0.12), transparent 30%),
+    radial-gradient(circle at 80% 10%, rgba(114, 135, 253, 0.10), transparent 34%),
+    var(--bg-base);
+  background-attachment: fixed;
+}
