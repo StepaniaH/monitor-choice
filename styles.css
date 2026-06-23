@@ -3,12 +3,12 @@
    Dark glassmorphism theme · vanilla CSS · zero external resources
    ===================================================================== */
 
-@import url('./css/theme.css');
-@import url('./css/sharpness.css');
-@import url('./css/size-view.css');
-@import url('./css/color-lab.css');
-@import url('./css/scenarios.css');
-@import url('./css/panel-guide.css');
+@import url('./css/theme.css?v=6');
+@import url('./css/sharpness.css?v=6');
+@import url('./css/size-view.css?v=6');
+@import url('./css/color-lab.css?v=6');
+@import url('./css/scenarios.css?v=6');
+@import url('./css/panel-guide.css?v=6');
 
 /* ---------------------------------------------------------------------
    Reset & base
@@ -85,7 +85,7 @@ button {
   display: grid;
   place-items: center;
   font-size: 28px;
-  box-shadow: 0 10px 30px rgba(139, 211, 255, 0.3);
+  box-shadow: 0 10px 30px var(--logo-shadow);
 }
 
 .app-header .header-text {
@@ -205,13 +205,13 @@ button {
 
 .input-panel select:hover {
   border-color: var(--accent-blue);
-  background-color: rgba(139, 211, 255, 0.06);
+  background-color: var(--bg-accent-hover);
 }
 
 .input-panel select:focus {
   outline: none;
   border-color: var(--accent-blue);
-  box-shadow: 0 0 0 3px rgba(139, 211, 255, 0.15);
+  box-shadow: 0 0 0 3px var(--ring-focus);
 }
 
 .input-panel select option {
@@ -254,7 +254,7 @@ button {
 .input-panel .more-params-toggle:hover {
   color: var(--text-primary);
   border-color: var(--accent-blue);
-  background: rgba(139, 211, 255, 0.08);
+  background: var(--bg-accent-hover);
 }
 
 /* Settings buttons row */
@@ -273,7 +273,7 @@ button {
   font-size: 13px;
   font-weight: 600;
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--bg-hover);
   border: 1px solid var(--border);
   border-radius: var(--radius-pill);
   cursor: pointer;
@@ -281,7 +281,7 @@ button {
 }
 
 .input-panel .settings-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--bg-hover-strong);
   border-color: var(--accent-blue);
 }
 
@@ -291,11 +291,11 @@ button {
 
 .input-panel .settings-btn.danger {
   color: var(--bad-red);
-  border-color: rgba(255, 154, 162, 0.3);
+  border-color: rgba(210, 15, 57, 0.3);
 }
 
 .input-panel .settings-btn.danger:hover {
-  background: rgba(255, 154, 162, 0.1);
+  background: rgba(210, 15, 57, 0.12);
   border-color: var(--bad-red);
 }
 
@@ -334,14 +334,14 @@ button {
 
 .tab-nav-btn:hover {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--bg-hover);
 }
 
 .tab-nav-btn.active {
   color: var(--accent-text);
   background: var(--gradient-accent);
   border-color: transparent;
-  box-shadow: 0 6px 20px rgba(139, 211, 255, 0.25);
+  box-shadow: 0 6px 20px var(--accent-shadow);
 }
 
 .tab-nav-btn.active:hover {
@@ -391,7 +391,7 @@ button {
   margin-bottom: var(--space-md);
   padding: var(--space-md);
   border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--bg-ghost);
   border: 1px solid var(--border);
   font-style: italic;
   color: var(--text-muted);
@@ -522,7 +522,7 @@ button {
 .theme-toggle:hover,
 .lang-toggle:hover {
   border-color: var(--accent-blue);
-  background: rgba(139, 211, 255, 0.1);
+  background: var(--bg-accent-hover);
 }
 
 .theme-toggle:active,

@@ -86,7 +86,7 @@
 
     var deskEl = document.getElementById('size-desk');
     var deskStat = document.getElementById('size-desk-stat');
-    if (deskEl) deskEl.textContent = '可用 ' + Math.round(desk.usableDepthCm) + 'cm / 最大 ' + Math.round(desk.maxDiagonalInch) + '″';
+    if (deskEl) deskEl.textContent = I18n.t('size.desk.usable', { usable: Math.round(desk.usableDepthCm), max: Math.round(desk.maxDiagonalInch) });
     if (deskStat) {
       deskStat.classList.remove('warn', 'bad');
       if (size > desk.maxDiagonalInch) deskStat.classList.add('bad');
@@ -102,7 +102,7 @@
     var container = document.getElementById('sizeSelector');
     if (!container) return;
     var availableSizes = [24, 27, 32, 38, 42, 48, 55, 65, 75];
-    var html = '<span class="control-label">对比尺寸：</span>';
+    var html = '<span class="control-label">' + I18n.t('size.compareSizes') + '：</span>';
     availableSizes.forEach(function (s) {
       var cls = 'size-pill';
       if (selectedSizes.indexOf(s) !== -1) cls += ' active';
@@ -194,7 +194,7 @@
       if (s.isCurrent) {
         ctx.fillStyle = '#8bd3ff';
         ctx.font = 'bold 9px system-ui, sans-serif';
-        ctx.fillText('当前', x + w / 2, baselineY + 32);
+        ctx.fillText(I18n.t('size.current'), x + w / 2, baselineY + 32);
       }
       cursorX += availW / screens.length;
     });
@@ -221,13 +221,13 @@
     ctx.fillStyle = '#ff9a3c';
     ctx.font = 'bold 12px system-ui, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('观看距离 ' + distance + 'cm', (padX + barEndX) / 2, barY - 8);
+    ctx.fillText(I18n.t('size.watchDist') + ' ' + distance + 'cm', (padX + barEndX) / 2, barY - 8);
 
     var fov = Calc.computeHorizontalFOV(size, ar, distance);
     ctx.fillStyle = 'rgba(100,200,100,0.7)';
     ctx.font = '11px system-ui, sans-serif';
     ctx.textAlign = 'right';
-    ctx.fillText('水平视野角 ' + fov.toFixed(1) + '°', cssW - padX, 25);
+    ctx.fillText(I18n.t('size.fovLabel') + ' ' + fov.toFixed(1) + '°', cssW - padX, 25);
     ctx.textAlign = 'left';
   }
 
@@ -657,6 +657,9 @@
       window.removeEventListener('resize', onResize);
       if (resizeTimer) clearTimeout(resizeTimer);
     });
+
+    // Re-render on language change
+    cleanups.push(I18n.onChange(function () { render(); }));
   }
 
   function destroy() {

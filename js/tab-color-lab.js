@@ -215,7 +215,7 @@
     var container = document.getElementById('gamutSelector');
     if (!container) return;
 
-    var html = '<span class="control-label">色域：</span>';
+    var html = '<span class="control-label">' + I18n.t('color.gamut') + '：</span>';
     GAMUTS.forEach(function (g) {
       var cls = 'gamut-pill';
       if (g.key === selectedGamut) cls += ' active';
@@ -233,8 +233,8 @@
     if (!container || !window.Constants || !Constants.PANEL_TYPES) return;
 
     var html = '<table><thead><tr>';
-    html += '<th>面板</th><th>对比度</th><th>色域</th><th>色准 ΔE</th>';
-    html += '<th>优势</th><th>不足</th>';
+    html += '<th>' + I18n.t('color.table.panel') + '</th><th>' + I18n.t('color.table.contrast') + '</th><th>' + I18n.t('color.table.gamut') + '</th><th>' + I18n.t('color.table.deltaE') + '</th>';
+    html += '<th>' + I18n.t('color.table.pros') + '</th><th>' + I18n.t('color.table.cons') + '</th>';
     html += '</tr></thead><tbody>';
 
     Constants.PANEL_TYPES.forEach(function (p) {
@@ -268,7 +268,7 @@
     var html = '';
     for (var key in Constants.SCENE_GAMUT_NEEDS) {
       var req = Constants.SCENE_GAMUT_NEEDS[key];
-      var label = SCENE_LABELS[key] || key;
+      var label = I18n.t('color.scene.' + key) || SCENE_LABELS[key] || key;
       var reqCls = '';
       if (req.indexOf('BT.2020') !== -1) reqCls = 'max';
       else if (req.indexOf('DCI-P3') !== -1 || req.indexOf('Adobe') !== -1) reqCls = 'high';
@@ -318,6 +318,9 @@
       window.removeEventListener('resize', onResize);
       if (resizeTimer) clearTimeout(resizeTimer);
     });
+
+    // Re-render on language change
+    cleanups.push(I18n.onChange(function () { render(); }));
   }
 
   function destroy() {

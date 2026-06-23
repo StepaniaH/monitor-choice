@@ -12,19 +12,19 @@
   var currentFilter = 'all';
 
   var FILTERS = [
-    { key: 'all',   label: '全部' },
-    { key: 'work',  label: '开发办公' },
-    { key: 'media', label: '影音' },
-    { key: 'game',  label: '游戏' },
-    { key: 'mac',   label: 'Mac 适配' }
+    { key: 'all',   labelKey: 'scenario.filter.all' },
+    { key: 'work',  labelKey: 'scenario.filter.work' },
+    { key: 'media', labelKey: 'scenario.filter.media' },
+    { key: 'game',  labelKey: 'scenario.filter.game' },
+    { key: 'mac',   labelKey: 'scenario.filter.mac' }
   ];
 
   var TAB_LABELS = {
-    sharpness: '清晰度实验室',
-    sizeView: '尺寸与距离',
-    colorLab: '色彩空间',
-    scenarios: '场景参考',
-    panelGuide: '面板百科'
+    sharpness: 'tab.sharpness',
+    sizeView: 'tab.sizeView',
+    colorLab: 'tab.colorLab',
+    scenarios: 'tab.scenarios',
+    panelGuide: 'tab.panelGuide'
   };
 
   /* ------------------------------------------------------------------ */
@@ -35,11 +35,11 @@
     var container = document.getElementById('scenarioFilters');
     if (!container) return;
 
-    var html = '<span class="filter-label">筛选：</span>';
+    var html = '<span class="filter-label">' + I18n.t('scenario.filter') + '：</span>';
     FILTERS.forEach(function (f) {
       var cls = 'filter-pill';
       if (f.key === currentFilter) cls += ' active';
-      html += '<button class="' + cls + '" data-filter="' + f.key + '">' + f.label + '</button>';
+      html += '<button class="' + cls + '" data-filter="' + f.key + '">' + I18n.t(f.labelKey) + '</button>';
     });
     container.innerHTML = html;
   }
@@ -52,6 +52,8 @@
     var container = document.getElementById('scenarioGrid');
     if (!container || !window.Scenarios) return;
 
+    var isEn = I18n.getLocale() === 'en';
+
     var filtered = Scenarios.filter(function (s) {
       if (currentFilter === 'all') return true;
       return s.category && s.category.indexOf(currentFilter) !== -1;
@@ -59,26 +61,31 @@
 
     var html = '';
     filtered.forEach(function (s) {
-      var metaHtml = (s.meta || []).map(function (m) {
+      var metaArr = (isEn && s.metaEn) ? s.metaEn : (s.meta || []);
+      var metaHtml = metaArr.map(function (m) {
         return '<div class="meta-row"><span class="meta-icon">›</span>' + m + '</div>';
       }).join('');
+
+      var title = (isEn && s.titleEn) ? s.titleEn : s.title;
+      var tag = (isEn && s.tagEn) ? s.tagEn : s.tag;
+      var choice = (isEn && s.choiceEn) ? s.choiceEn : s.choice;
 
       var relatedHtml = '';
       if (s.relatedTabs && s.relatedTabs.length > 0) {
         var links = s.relatedTabs.map(function (tab) {
-          var label = TAB_LABELS[tab] || tab;
+          var label = I18n.t(TAB_LABELS[tab]) || tab;
           return '<a href="#" data-tab="' + tab + '" class="related-tab-link">' + label + '</a>';
         }).join(' · ');
-        relatedHtml = '<div class="related-link">相关：' + links + '</div>';
+        relatedHtml = '<div class="related-link">' + I18n.t('scenario.related') + '：' + links + '</div>';
       }
 
       html +=
         '<div class="scenario-card">' +
-        '<span class="tag">' + s.tag + '</span>' +
-        '<h3>' + s.title + '</h3>' +
+        '<span class="tag">' + tag + '</span>' +
+        '<h3>' + title + '</h3>' +
         '<div class="meta">' + metaHtml + '</div>' +
-        '<div class="choice">' + s.choice + '</div>' +
-        '<button class="apply-btn" data-scenario="' + s.id + '">应用此场景</button>' +
+        '<div class="choice">' + choice + '</div>' +
+        '<button class="apply-btn" data-scenario="' + s.id + '">' + I18n.t('scenario.apply') + '</button>' +
         relatedHtml +
         '</div>';
     });
@@ -98,7 +105,6 @@
     var size = Math.round((p.recommendedSize.min + p.recommendedSize.max) / 2);
     var targetPpi = (p.recommendedPPI.min + p.recommendedPPI.max) / 2;
 
-    // Find resolution that gives closest PPI at the selected size
     var bestRes = null;
     var bestDiff = Infinity;
     if (window.Constants && Constants.RESOLUTIONS) {
@@ -118,7 +124,6 @@
     }
     AppState.batch(updates);
 
-    // Switch to related tab
     if (scenario.relatedTabs && scenario.relatedTabs.length > 0) {
       if (window.switchTab) {
         window.switchTab(scenario.relatedTabs[0]);
@@ -156,7 +161,7 @@
       cleanups.push(function () { filterContainer.removeEventListener('click', handleFilterClick); });
     }
 
-    // Grid clicks (apply + related links)
+    // Grid clicks
     var gridContainer = document.getElementById('scenarioGrid');
     if (gridContainer) {
       function handleGridClick(e) {
@@ -176,6 +181,9 @@
       gridContainer.addEventListener('click', handleGridClick);
       cleanups.push(function () { gridContainer.removeEventListener('click', handleGridClick); });
     }
+
+    // Re-render on language change
+    cleanups.push(I18n.onChange(function () { render(); }));
   }
 
   function destroy() {

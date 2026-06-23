@@ -26,11 +26,11 @@
 
   function ppdLabel(ppd) {
     var t = Calc.PPD_THRESHOLDS;
-    if (ppd < t.POOR) return '差';
-    if (ppd < t.FAIR) return '一般';
-    if (ppd < t.GOOD) return '良好';
-    if (ppd < t.EXCELLENT) return '优秀';
-    return '视网膜级';
+    if (ppd < t.POOR) return I18n.t('sharp.scale.poor');
+    if (ppd < t.FAIR) return I18n.t('sharp.scale.fair');
+    if (ppd < t.GOOD) return I18n.t('sharp.scale.good');
+    if (ppd < t.EXCELLENT) return I18n.t('sharp.scale.excellent');
+    return I18n.t('sharp.scale.retina');
   }
 
   function ppdColor(ppd) {
@@ -61,7 +61,6 @@
         }
       }
     }
-    // Fallback: most different
     var best = null, bestDiff = 0;
     all.forEach(function (r) {
       if (r.w === w && r.h === h) return;
@@ -109,7 +108,6 @@
       current: true
     }];
 
-    // Config 2: alternative resolution at same size
     var altRes = findAltResolution(w, h);
     if (altRes) {
       var altPpi = Calc.computePPI(altRes.w, altRes.h, size);
@@ -125,7 +123,6 @@
       });
     }
 
-    // Config 3: alternative size at same resolution
     var altSize = findAltSize(size);
     var sizePpi = Calc.computePPI(w, h, altSize);
     configs.push({
@@ -178,8 +175,6 @@
 
     // Marker
     var markerX = Math.min(cssW - 2, Math.max(2, (ppd / maxPPD) * cssW));
-
-    // Marker glow (for visibility on colored bg)
     ctx.shadowColor = '#fff';
     ctx.shadowBlur = 6;
     ctx.strokeStyle = '#fff';
@@ -190,7 +185,7 @@
     ctx.stroke();
     ctx.shadowBlur = 0;
 
-    // Retina threshold line (PPD=60)
+    // Retina threshold line
     var retinaX = (Calc.PPD_THRESHOLDS.RETINA / maxPPD) * cssW;
     ctx.strokeStyle = 'rgba(255,255,255,0.5)';
     ctx.lineWidth = 1.5;
@@ -210,21 +205,24 @@
     var el = document.getElementById('sharp-retina-callout');
     if (!el) return;
 
-    var status, statusClass;
+    var statusKey, statusClass;
     if (ppd < Calc.PPD_THRESHOLDS.POOR) {
-      status = '文字明显发虚，建议提高分辨率或拉远距离';
+      statusKey = 'sharp.status.poor';
       statusClass = 'poor';
     } else if (distance < retina) {
-      status = '低于视网膜距离，可能看到像素颗粒';
+      statusKey = 'sharp.status.below';
       statusClass = 'below';
     } else {
-      status = '已达到视网膜级别，文字清晰锐利';
+      statusKey = 'sharp.status.good';
       statusClass = '';
     }
 
-    el.innerHTML =
-      '当前观看距离 <b>' + distance + 'cm</b>，视网膜距离 <b>' +
-      Math.round(retina) + 'cm</b>。<span class="retina-status ' + statusClass + '">' + status + '。</span>';
+    el.innerHTML = I18n.t('sharp.retinaCallout', {
+      distance: distance,
+      retina: Math.round(retina),
+      statusClass: statusClass,
+      status: I18n.t(statusKey)
+    });
   }
 
   /* ------------------------------------------------------------------ */
@@ -241,8 +239,7 @@
     var ctx = canvas.getContext('2d');
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    // Background
-    ctx.fillStyle = config.current ? getCanvasBgLight() : getCanvasBg();
+    ctx.fillStyle = getCanvasBg();
     ctx.fillRect(0, 0, cssW, cssH);
 
     if (config.current) {
@@ -251,7 +248,6 @@
       ctx.strokeRect(0.75, 0.75, cssW - 1.5, cssH - 1.5);
     }
 
-    // Header
     var headerH = 42;
     if (card) {
       var titleEl = card.querySelector('.card-title');
@@ -267,12 +263,10 @@
       }
     }
 
-    // Text comparison area
     var textAreaY = headerH;
     var textAreaH = cssH - headerH - 6;
     var textAreaW = cssW - 4;
 
-    // Virtual canvas proportional to PPD — lower PPD = more pixelation
     var refPPD = 90;
     var scale = Math.max(0.12, Math.min(1, config.ppd / refPPD));
     var vW = Math.max(2, Math.round(textAreaW * scale));
@@ -286,20 +280,18 @@
     octx.fillStyle = getCanvasBg();
     octx.fillRect(0, 0, vW, vH);
 
-    // Render text on virtual canvas
     var fs = Math.max(6, Math.round(vH * 0.14));
     octx.fillStyle = '#e8e8e8';
     octx.font = 'bold ' + fs + 'px sans-serif';
     octx.textBaseline = 'top';
-    octx.fillText('敏捷的棕色狐狸', 2, vH * 0.06);
-    octx.fillText('跳过了那只懒狗', 2, vH * 0.28);
+    octx.fillText(I18n.t('sharp.pixelText1'), 2, vH * 0.06);
+    octx.fillText(I18n.t('sharp.pixelText2'), 2, vH * 0.28);
 
     octx.font = (fs * 0.7) + 'px sans-serif';
     octx.fillStyle = '#aaa';
     octx.fillText('The quick brown fox', 2, vH * 0.54);
     octx.fillText('jumps over the lazy dog', 2, vH * 0.72);
 
-    // Scale up with no smoothing to show pixelation
     ctx.imageSmoothingEnabled = false;
     ctx.drawImage(off, 2, textAreaY, textAreaW, textAreaH);
     ctx.imageSmoothingEnabled = true;
@@ -322,20 +314,15 @@
     var ppd = Calc.computePPD(ppi, distance);
     var retina = Calc.computeRetinaDistance(ppi);
 
-    // Stats
     var el;
     el = document.getElementById('sharp-ppi');    if (el) el.textContent = Math.round(ppi);
     el = document.getElementById('sharp-ppd');
     if (el) { el.textContent = ppd.toFixed(1); el.style.color = ppdColor(ppd); }
     el = document.getElementById('sharp-retina'); if (el) el.textContent = Math.round(retina) + ' cm';
 
-    // PPD meter
     renderPPDMeter(ppd);
-
-    // Retina callout
     renderRetinaCallout(distance, retina, ppd);
 
-    // Comparison canvases
     var configs = getConfigs({ distance: distance, size: size, resolution: resolution });
     for (var i = 0; i < 3; i++) {
       var canvas = document.getElementById('sharp-canvas-' + i);
@@ -368,6 +355,9 @@
       window.removeEventListener('resize', onResize);
       if (resizeTimer) clearTimeout(resizeTimer);
     });
+
+    // Re-render on language change
+    cleanups.push(I18n.onChange(function () { render(); }));
   }
 
   function destroy() {
