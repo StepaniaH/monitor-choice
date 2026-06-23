@@ -29,6 +29,34 @@
   --accent-text: #232634;
   --accent-shadow: 0 0 20px rgba(140, 170, 238, 0.25);
 
+  /* Canvas drawing colors (theme-dependent) */
+  --canvas-text: #e8e8e8;
+  --canvas-text-muted: #aaa;
+  --canvas-grid: rgba(198, 208, 245, 0.08);
+  --canvas-axis: rgba(198, 208, 245, 0.20);
+  --canvas-label: rgba(198, 208, 245, 0.35);
+  --canvas-tick: rgba(198, 208, 245, 0.25);
+  --canvas-accent: #8caaee;
+  --canvas-accent-fill: rgba(140, 170, 238, 0.10);
+  --canvas-accent-ghost: rgba(140, 170, 238, 0.03);
+  --canvas-accent-border: rgba(140, 170, 238, 0.40);
+  --canvas-ghost: rgba(198, 208, 245, 0.04);
+  --canvas-highlight: #ff9a3c;
+  --canvas-fov: rgba(166, 209, 137, 0.7);
+  --canvas-desk-fill: rgba(180, 140, 80, 0.12);
+  --canvas-desk-stroke: rgba(200, 160, 100, 0.40);
+  --canvas-person: rgba(241, 201, 165, 0.6);
+  --canvas-person-stroke: rgba(241, 201, 165, 0.8);
+  --canvas-clothes: rgba(179, 156, 255, 0.15);
+  --canvas-clothes-stroke: rgba(179, 156, 255, 0.4);
+  --canvas-stand: rgba(140, 170, 238, 0.20);
+  --canvas-stand-border: rgba(140, 170, 238, 0.4);
+  --canvas-side: rgba(100, 100, 110, 0.15);
+  --canvas-side-border: rgba(150, 150, 160, 0.3);
+  --canvas-d65-fill: #fff;
+  --canvas-d65-stroke: #000;
+  --canvas-d65-label: rgba(198, 208, 245, 0.6);
+
   /* Hover / ghost / focus — theme-dependent */
   --bg-hover: rgba(198, 208, 245, 0.08);
   --bg-hover-strong: rgba(198, 208, 245, 0.14);
@@ -93,6 +121,27 @@
   --bg-accent-hover: rgba(30, 102, 245, 0.08);
   --ring-focus: rgba(30, 102, 245, 0.15);
   --logo-shadow: rgba(30, 102, 245, 0.25);
+
+  --canvas-text: #4c4f69;
+  --canvas-text-muted: #6c6f85;
+  --canvas-grid: rgba(76, 79, 105, 0.10);
+  --canvas-axis: rgba(76, 79, 105, 0.22);
+  --canvas-label: rgba(76, 79, 105, 0.50);
+  --canvas-tick: rgba(76, 79, 105, 0.35);
+  --canvas-accent: #1e66f5;
+  --canvas-accent-fill: rgba(30, 102, 245, 0.08);
+  --canvas-accent-ghost: rgba(30, 102, 245, 0.03);
+  --canvas-accent-border: rgba(30, 102, 245, 0.40);
+  --canvas-ghost: rgba(76, 79, 105, 0.06);
+  --canvas-highlight: #fe640b;
+  --canvas-fov: rgba(64, 160, 43, 0.7);
+  --canvas-desk-fill: rgba(180, 140, 80, 0.08);
+  --canvas-desk-stroke: rgba(180, 140, 80, 0.35);
+  --canvas-side: rgba(140, 140, 150, 0.10);
+  --canvas-side-border: rgba(140, 140, 150, 0.25);
+  --canvas-d65-fill: #4c4f69;
+  --canvas-d65-stroke: #eff1f5;
+  --canvas-d65-label: rgba(76, 79, 105, 0.6);
 
   --shadow-card: 0 12px 60px rgba(0, 0, 0, 0.08);
   --shadow-sticky: 0 8px 30px rgba(0, 0, 0, 0.1);

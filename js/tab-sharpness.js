@@ -38,7 +38,7 @@
     if (ppd < t.POOR) return '#ff9aa2';
     if (ppd < t.FAIR) return '#ffd37a';
     if (ppd < t.GOOD) return '#8ff0b2';
-    if (ppd < t.EXCELLENT) return '#8bd3ff';
+    if (ppd < t.EXCELLENT) return CA('accent') || '#8bd3ff';
     return '#b39cff';
   }
 
@@ -78,6 +78,10 @@
     return currentSize === 32 ? 27 : 32;
   }
 
+  /** Shortcut: read a canvas CSS variable. */
+  function CA(name) {
+    return window.ThemeManager ? ThemeManager.getCanvasColor(name) : '';
+  }
   /** Return current theme's canvas background color. */
   function getCanvasBg() {
     return window.ThemeManager ? ThemeManager.getCanvasBg() : '#232634';
@@ -162,7 +166,7 @@
       { from: 0, to: t.POOR, color: '#ff9aa2' },
       { from: t.POOR, to: t.FAIR, color: '#ffd37a' },
       { from: t.FAIR, to: t.GOOD, color: '#8ff0b2' },
-      { from: t.GOOD, to: t.EXCELLENT, color: '#8bd3ff' },
+      { from: t.GOOD, to: t.EXCELLENT, color: CA('accent') || '#8bd3ff' },
       { from: t.EXCELLENT, to: maxPPD, color: '#b39cff' }
     ];
 
@@ -175,9 +179,9 @@
 
     // Marker
     var markerX = Math.min(cssW - 2, Math.max(2, (ppd / maxPPD) * cssW));
-    ctx.shadowColor = '#fff';
+    ctx.shadowColor = 'transparent';
     ctx.shadowBlur = 6;
-    ctx.strokeStyle = '#fff';
+    ctx.strokeStyle = CA('text');
     ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.moveTo(markerX, -2);
@@ -187,7 +191,7 @@
 
     // Retina threshold line
     var retinaX = (Calc.PPD_THRESHOLDS.RETINA / maxPPD) * cssW;
-    ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+    ctx.strokeStyle = CA('grid');
     ctx.lineWidth = 1.5;
     ctx.setLineDash([3, 3]);
     ctx.beginPath();
@@ -243,7 +247,7 @@
     ctx.fillRect(0, 0, cssW, cssH);
 
     if (config.current) {
-      ctx.strokeStyle = 'rgba(139,211,255,0.4)';
+      ctx.strokeStyle = CA('accent-border');
       ctx.lineWidth = 1.5;
       ctx.strokeRect(0.75, 0.75, cssW - 1.5, cssH - 1.5);
     }
@@ -254,7 +258,7 @@
       var subEl = card.querySelector('.card-subtitle');
       if (titleEl) {
         titleEl.textContent = config.label;
-        if (config.current) titleEl.style.color = '#8bd3ff';
+        if (config.current) titleEl.style.color = CA('accent');
         else titleEl.style.color = '';
       }
       if (subEl) {
@@ -281,14 +285,14 @@
     octx.fillRect(0, 0, vW, vH);
 
     var fs = Math.max(6, Math.round(vH * 0.14));
-    octx.fillStyle = '#e8e8e8';
+    octx.fillStyle = CA('text');
     octx.font = 'bold ' + fs + 'px sans-serif';
     octx.textBaseline = 'top';
     octx.fillText(I18n.t('sharp.pixelText1'), 2, vH * 0.06);
     octx.fillText(I18n.t('sharp.pixelText2'), 2, vH * 0.28);
 
     octx.font = (fs * 0.7) + 'px sans-serif';
-    octx.fillStyle = '#aaa';
+    octx.fillStyle = CA('text-muted');
     octx.fillText('The quick brown fox', 2, vH * 0.54);
     octx.fillText('jumps over the lazy dog', 2, vH * 0.72);
 
@@ -356,6 +360,10 @@
       if (resizeTimer) clearTimeout(resizeTimer);
     });
 
+    // Re-render on theme change
+    if (window.ThemeManager) {
+      cleanups.push(ThemeManager.onChange(function () { render(); }));
+    }
     // Re-render on language change
     cleanups.push(I18n.onChange(function () { render(); }));
   }

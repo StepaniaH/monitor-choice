@@ -3,12 +3,12 @@
    Dark glassmorphism theme · vanilla CSS · zero external resources
    ===================================================================== */
 
-@import url('./css/theme.css?v=6');
-@import url('./css/sharpness.css?v=6');
-@import url('./css/size-view.css?v=6');
-@import url('./css/color-lab.css?v=6');
-@import url('./css/scenarios.css?v=6');
-@import url('./css/panel-guide.css?v=6');
+@import url('./css/theme.css?v=7');
+@import url('./css/sharpness.css?v=7');
+@import url('./css/size-view.css?v=7');
+@import url('./css/color-lab.css?v=7');
+@import url('./css/scenarios.css?v=7');
+@import url('./css/panel-guide.css?v=7');
 
 /* ---------------------------------------------------------------------
    Reset & base

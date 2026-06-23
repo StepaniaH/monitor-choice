@@ -1,7 +1,7 @@
 /**
  * theme.js — Catppuccin theme manager.
  * Detects system preference, stores user choice, toggles instantly.
- * Attaches to window.ThemeManager = { init(), toggle(), getStoredTheme() }.
+ * Attaches to window.ThemeManager = { init(), toggle(), getStoredTheme(), getCanvasBg(), getCanvasColor(), onChange() }.
  *
  * Must load EARLY (first script in <body>) to avoid FOUC.
  */
@@ -9,6 +9,7 @@
   'use strict';
 
   var STORAGE_KEY = 'monitor-choice-theme';
+  var listeners = [];
 
   /** Detect system color scheme preference. */
   function getSystemTheme() {
@@ -42,13 +43,14 @@
     }
   }
 
-  /** Toggle between latte ↔ frappé and persist. */
+  /** Toggle between latte ↔ frappé, persist, and notify listeners. */
   function toggle() {
     var current = document.documentElement.getAttribute('data-theme');
     var next = current === 'frappe' ? 'latte' : 'frappe';
     applyTheme(next);
     setStoredTheme(next);
     updateButton(next);
+    notifyListeners(next);
   }
 
   /** Update toggle button emoji based on current theme. */
@@ -57,6 +59,45 @@
     if (btn) {
       btn.textContent = theme === 'frappe' ? '☀️' : '🌙';
       btn.title = theme === 'frappe' ? '切换到亮色主题' : '切换到暗色主题';
+    }
+  }
+
+  /** Call all registered change listeners with the new theme name. */
+  function notifyListeners(theme) {
+    listeners.forEach(function (fn) {
+      try { fn(theme); } catch (e) {}
+    });
+  }
+
+  /** Register a callback that fires on every theme change. Returns unsubscribe function. */
+  function onChange(fn) {
+    listeners.push(fn);
+    return function () {
+      var idx = listeners.indexOf(fn);
+      if (idx !== -1) listeners.splice(idx, 1);
+    };
+  }
+
+  /** Return current theme's canvas background color. */
+  function getCanvasBg() {
+    try {
+      return getComputedStyle(document.documentElement)
+        .getPropertyValue('--bg-canvas')
+        .trim() || '#232634';
+    } catch (e) {
+      return '#232634';
+    }
+  }
+
+  /** Read a named CSS custom property for canvas drawing. */
+  function getCanvasColor(name) {
+    try {
+      var val = getComputedStyle(document.documentElement)
+        .getPropertyValue('--canvas-' + name)
+        .trim();
+      return val || '';
+    } catch (e) {
+      return '';
     }
   }
 
@@ -80,6 +121,7 @@
           var newTheme = e.matches ? 'frappe' : 'latte';
           applyTheme(newTheme);
           updateButton(newTheme);
+          notifyListeners(newTheme);
         }
       });
   }
@@ -88,19 +130,10 @@
     init: init,
     toggle: toggle,
     getStoredTheme: getStoredTheme,
-    getCanvasBg: getCanvasBg
+    getCanvasBg: getCanvasBg,
+    getCanvasColor: getCanvasColor,
+    onChange: onChange
   };
-
-  /** Return current theme's canvas background color. */
-  function getCanvasBg() {
-    try {
-      return getComputedStyle(document.documentElement)
-        .getPropertyValue('--bg-canvas')
-        .trim() || '#232634';
-    } catch (e) {
-      return '#232634';
-    }
-  }
 
   // Auto-init on DOM ready (runs before other modules)
   if (document.readyState === 'loading') {

@@ -12,6 +12,10 @@
   var resizeTimer = null;
   var selectedGamut = 'srgb';
 
+  /** Shortcut: read a canvas CSS variable. */
+  function CA(name) {
+    return window.ThemeManager ? ThemeManager.getCanvasColor(name) : '';
+  }
   /** Return current theme's canvas background color. */
   function getCanvasBg() {
     return window.ThemeManager ? ThemeManager.getCanvasBg() : '#232634';
@@ -70,7 +74,7 @@
     }
 
     // Grid
-    ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+    ctx.strokeStyle = CA('grid');
     ctx.lineWidth = 1;
     for (var gx = 0; gx <= xMax; gx += 0.1) {
       var gp = toPx(gx, 0);
@@ -88,7 +92,7 @@
     }
 
     // Axes
-    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+    ctx.strokeStyle = CA('axis');
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(padL, padT);
@@ -96,14 +100,14 @@
     ctx.lineTo(cssW - padR, cssH - padB);
     ctx.stroke();
 
-    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.fillStyle = CA('label');
     ctx.font = '11px sans-serif';
     ctx.textAlign = 'left';
     ctx.fillText('x', cssW - padR - 5, cssH - padB + 15);
     ctx.fillText('y', padL - 15, padT + 8);
 
     // Tick labels
-    ctx.fillStyle = 'rgba(255,255,255,0.25)';
+    ctx.fillStyle = CA('tick');
     ctx.font = '9px sans-serif';
     ctx.textAlign = 'center';
     for (var tx = 0; tx <= xMax; tx += 0.2) {
@@ -137,7 +141,7 @@
       ctx.fillStyle = grad;
       ctx.fill();
 
-      ctx.strokeStyle = 'rgba(200,200,255,0.45)';
+      ctx.strokeStyle = CA('accent-border');
       ctx.lineWidth = 1.5;
       ctx.stroke();
     }
@@ -159,15 +163,15 @@
       ctx.lineTo(b.px, b.py);
       ctx.closePath();
 
-      ctx.fillStyle = isSelected ? g.color + '22' : 'rgba(255,255,255,0.015)';
+      ctx.fillStyle = isSelected ? g.color + '22' : CA('ghost');
       ctx.fill();
-      ctx.strokeStyle = isSelected ? g.color : 'rgba(160,160,180,0.2)';
+      ctx.strokeStyle = isSelected ? g.color : CA('side');
       ctx.lineWidth = isSelected ? 2 : 1;
       ctx.stroke();
 
       // Vertex dots
       [r, gg, b].forEach(function (pt) {
-        ctx.fillStyle = isSelected ? g.color : 'rgba(160,160,180,0.35)';
+        ctx.fillStyle = isSelected ? g.color : CA('side-border');
         ctx.beginPath();
         ctx.arc(pt.px, pt.py, isSelected ? 3 : 2, 0, Math.PI * 2);
         ctx.fill();
@@ -192,14 +196,14 @@
 
     // D65 white point
     var d65 = toPx(0.3127, 0.3290);
-    ctx.fillStyle = '#fff';
+    ctx.fillStyle = CA('d65-fill');
     ctx.beginPath();
     ctx.arc(d65.px, d65.py, 3, 0, Math.PI * 2);
     ctx.fill();
-    ctx.strokeStyle = '#000';
+    ctx.strokeStyle = CA('d65-stroke');
     ctx.lineWidth = 0.5;
     ctx.stroke();
-    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.fillStyle = CA('d65-label');
     ctx.font = '9px sans-serif';
     ctx.textAlign = 'left';
     ctx.fillText('D65', d65.px + 5, d65.py - 4);
@@ -319,6 +323,10 @@
       if (resizeTimer) clearTimeout(resizeTimer);
     });
 
+    // Re-render on theme change
+    if (window.ThemeManager) {
+      cleanups.push(ThemeManager.onChange(function () { render(); }));
+    }
     // Re-render on language change
     cleanups.push(I18n.onChange(function () { render(); }));
   }
